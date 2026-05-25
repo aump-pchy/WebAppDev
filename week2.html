@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 2 — HTML & Tailwind CSS เบื้องต้น</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0D1B2A;--navy2:#162236;--navy3:#1E2F45;--blue:#3B82F6;--bsoft:#1D3A5F;--teal:#10B981;--tsoft:#0D3D2E;--amber:#F59E0B;--asoft:#3D2E0D;--red:#EF4444;--rsoft:#3D1010;--purple:#A855F7;--psoft:#2D1B4E;--text:#F0F4F8;--text2:#94A3B8;--text3:#64748B;--border:#1E3A5F;--card:#162236;--r:12px;--rs:8px}
+html,body{height:100%;background:var(--navy);color:var(--text);font-family:'Sarabun',sans-serif;font-size:16px;line-height:1.7}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:220px;background:var(--navy2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.st{padding:18px 14px 10px}
+.ctag{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);text-transform:uppercase;margin-bottom:3px}
+.cname{font-size:12px;color:var(--text2);line-height:1.4}
+.whero{margin-top:10px;padding:11px 13px;background:var(--tsoft);border-radius:var(--rs);border:1px solid var(--teal)}
+.wnum{font-size:24px;font-weight:700;color:var(--text);line-height:1}
+.wlbl{font-size:11px;color:#6EE7B7;margin-top:2px}
+.nav{flex:1;padding:8px;overflow-y:auto}
+.nsec{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:10px 8px 3px}
+.ni{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:var(--rs);cursor:pointer;color:var(--text2);font-size:13px;margin-bottom:1px;transition:all .15s}
+.ni:hover{background:var(--navy3);color:var(--text)}
+.ni.active{background:var(--tsoft);color:var(--teal);font-weight:600}
+.ni.done{color:var(--teal)}
+.nico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.sb2{padding:12px 14px;border-top:1px solid var(--border)}
+.pw{background:var(--navy3);border-radius:20px;height:4px;overflow:hidden;margin:6px 0 3px}
+.pf{height:100%;background:linear-gradient(90deg,var(--teal),#34D399);border-radius:20px;transition:width .4s}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:13px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--navy2)}
+.ttl{font-size:16px;font-weight:600;color:var(--text)}
+.tsub{font-size:12px;color:var(--text2);margin-top:1px}
+.abtn{width:30px;height:30px;border-radius:var(--rs);border:1px solid var(--border);background:var(--navy3);color:var(--text2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.abtn:hover{border-color:var(--teal);color:var(--teal)}
+.abtn:disabled{opacity:.3;cursor:not-allowed}
+.dots{display:flex;gap:4px;align-items:center;flex-wrap:wrap;max-width:200px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s}
+.dot.active{background:var(--teal);width:16px;border-radius:3px}
+.dot.done{background:var(--teal);opacity:.5}
+.cnt{flex:1;overflow-y:auto;padding:26px}
+.cnt::-webkit-scrollbar{width:4px}
+.cnt::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.slide{display:none}
+.slide.active{display:block;animation:fu .25s ease}
+@keyframes fu{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ci{width:32px;height:32px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ci.b{background:var(--bsoft)}.ci.t{background:var(--tsoft)}.ci.a{background:var(--asoft)}.ci.p{background:var(--psoft)}
+.ct{font-size:14px;font-weight:600;color:var(--text)}
+.cd{font-size:12px;color:var(--text2);margin-top:1px}
+kbd{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--navy);border:1px solid var(--border);border-bottom:2px solid var(--border);border-radius:5px;padding:2px 7px;color:var(--text);white-space:nowrap}
+.code{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--navy);border:1px solid var(--border);border-radius:var(--rs);padding:11px 15px;color:#7DD3FC;margin:7px 0;line-height:1.9;overflow-x:auto;white-space:pre}
+.code .cm{color:var(--text3)}.code .ok{color:var(--teal)}.code .tg{color:#F9A8D4}.code .at{color:#FDE68A}.code .vl{color:#A7F3D0}
+.tip{background:var(--asoft);border-left:3px solid var(--amber);border-radius:0 var(--rs) var(--rs) 0;padding:10px 14px;font-size:14px;color:#FDE68A;line-height:1.6;margin-bottom:13px}
+.info{background:var(--bsoft);border-left:3px solid var(--blue);border-radius:0 var(--rs) var(--rs) 0;padding:10px 14px;font-size:14px;color:#BFDBFE;line-height:1.6;margin-bottom:13px}
+.suc{background:var(--tsoft);border-left:3px solid var(--teal);border-radius:0 var(--rs) var(--rs) 0;padding:10px 14px;font-size:14px;color:#A7F3D0;line-height:1.6;margin-bottom:13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+.slist{list-style:none}
+.si{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+.si:last-child{border-bottom:none}
+.sn{width:24px;height:24px;border-radius:50%;background:var(--tsoft);border:1px solid var(--teal);color:var(--teal);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.sb3{flex:1}.st2{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.sd{font-size:12px;color:var(--text2);line-height:1.6}
+/* HTML TAG TABLE */
+.tag-table{width:100%;border-collapse:collapse}
+.tag-table th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:7px 11px;border-bottom:1px solid var(--border)}
+.tag-table td{padding:9px 11px;border-bottom:1px solid #0D1B2A;font-size:13px;vertical-align:top}
+.tag-table tr:last-child td{border-bottom:none}
+.tag-table tr:hover td{background:var(--navy3)}
+.tag-badge{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--psoft);border:1px solid var(--purple);border-radius:4px;padding:2px 8px;color:#D8B4FE;white-space:nowrap}
+/* TAILWIND DEMO */
+.tw-demo{border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;margin-bottom:12px}
+.tw-demo-header{background:var(--navy3);padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.tw-demo-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.tw-code-side{padding:14px;border-right:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:12px;color:#7DD3FC;line-height:1.8;background:var(--navy)}
+.tw-preview-side{padding:14px;display:flex;align-items:center;justify-content:center;background:#fff;min-height:80px}
+.tw-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+/* CLASS EXPLORER */
+.cls-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.cls-btn{padding:8px 10px;border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--text2);background:var(--navy3);transition:all .2s;text-align:center}
+.cls-btn:hover{border-color:var(--teal);color:var(--teal)}
+.cls-btn.active{border-color:var(--teal);background:var(--tsoft);color:#A7F3D0}
+.cls-preview{background:#fff;border-radius:var(--rs);min-height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden}
+.cls-explain{background:var(--navy3);border-radius:var(--rs);padding:11px 14px;font-size:13px;color:var(--text2);min-height:52px;line-height:1.6}
+.cls-explain b{color:var(--text)}
+/* CHALLENGE */
+.challenge{background:var(--navy3);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.ch-title{font-size:14px;font-weight:600;color:var(--teal);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.ch-desc{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6}
+.ch-target{background:#fff;border-radius:var(--rs);padding:14px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;min-height:70px}
+.textarea-code{width:100%;background:var(--navy);border:1px solid var(--border);border-radius:var(--rs);padding:11px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#7DD3FC;resize:vertical;min-height:80px;line-height:1.8;outline:none;transition:border-color .2s}
+.textarea-code:focus{border-color:var(--teal)}
+.ch-result{background:#fff;border-radius:var(--rs);padding:14px;margin-top:10px;min-height:70px;display:flex;align-items:center;justify-content:center}
+.btn{padding:8px 18px;border-radius:var(--rs);border:1px solid var(--border);background:var(--navy3);color:var(--text2);cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif;transition:all .2s}
+.btn:hover{border-color:var(--teal);color:var(--teal)}
+.btn.pr{background:var(--tsoft);border-color:var(--teal);color:var(--teal)}
+/* QUIZ */
+.qo{display:flex;flex-direction:column;gap:7px}
+.qopt{padding:10px 15px;border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:14px;color:var(--text2);transition:all .2s}
+.qopt:hover{border-color:var(--teal);color:var(--text);background:var(--tsoft)}
+.qopt.correct{border-color:var(--teal)!important;background:var(--tsoft)!important;color:#A7F3D0!important}
+.qopt.wrong{border-color:var(--red)!important;background:var(--rsoft)!important;color:#FCA5A5!important}
+.qfb{margin-top:9px;padding:10px 14px;border-radius:var(--rs);font-size:13px;display:none;line-height:1.6}
+.qfb.ok{background:var(--tsoft);color:#A7F3D0;border:1px solid var(--teal);display:block}
+.qfb.no{background:var(--rsoft);color:#FCA5A5;border:1px solid var(--red);display:block}
+/* CHECKLIST */
+.chi{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.chi:last-child{border-bottom:none}
+.chb{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--text3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:all .2s}
+.chi.done .chb{background:var(--teal);border-color:var(--teal)}
+.chi.done .chl{color:var(--text2);text-decoration:line-through;text-decoration-color:var(--text3)}
+.chl{font-size:13px;font-weight:500;color:var(--text);transition:color .2s}
+.chs{font-size:11px;color:var(--text2);margin-top:1px;font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="st">
+    <div class="ctag">21901-2003</div>
+    <div class="cname">การพัฒนาเว็บแอปพลิเคชัน</div>
+    <div class="whero"><div class="wnum">Week 2</div><div class="wlbl">HTML & Tailwind เบื้องต้น</div></div>
+  </div>
+  <div class="nav">
+    <div class="nsec">HTML</div>
+    <div class="ni active" onclick="go(0)" id="n0"><span class="nico">📄</span>HTML คืออะไร</div>
+    <div class="ni" onclick="go(1)" id="n1"><span class="nico">🏗️</span>โครงสร้าง HTML</div>
+    <div class="ni" onclick="go(2)" id="n2"><span class="nico">🔖</span>Tags สำคัญ</div>
+    <div class="nsec">Tailwind CSS</div>
+    <div class="ni" onclick="go(3)" id="n3"><span class="nico">🎨</span>Tailwind คืออะไร</div>
+    <div class="ni" onclick="go(4)" id="n4"><span class="nico">✏️</span>Typography</div>
+    <div class="ni" onclick="go(5)" id="n5"><span class="nico">📐</span>Spacing</div>
+    <div class="ni" onclick="go(6)" id="n6"><span class="nico">🌈</span>สี Background & Text</div>
+    <div class="ni" onclick="go(7)" id="n7"><span class="nico">📏</span>Width & Height</div>
+    <div class="ni" onclick="go(8)" id="n8"><span class="nico">🔲</span>Border & Shadow</div>
+    <div class="nsec">🎮 ลงมือทำ</div>
+    <div class="ni" onclick="go(9)" id="n9"><span class="nico">🔍</span>Class Explorer</div>
+    <div class="ni" onclick="go(10)" id="n10"><span class="nico">⚡</span>Challenge: Card</div>
+    <div class="ni" onclick="go(11)" id="n11"><span class="nico">📝</span>แบบทดสอบ</div>
+    <div class="ni" onclick="go(12)" id="n12"><span class="nico">🏁</span>สรุป Week 2</div>
+  </div>
+  <div class="sb2">
+    <div style="font-size:11px;color:var(--text3)" id="olbl">สไลด์ 1 / 13</div>
+    <div class="pw"><div class="pf" id="oprog" style="width:8%"></div></div>
+    <div class="dots" id="sdots"></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div><div class="ttl" id="tbtl">HTML คืออะไร</div><div class="tsub" id="tbsb">ช่วงที่ 1 · ทบทวน HTML</div></div>
+    <div style="display:flex;gap:6px">
+      <button class="abtn" id="bprev" onclick="nav(-1)" disabled>←</button>
+      <button class="abtn" id="bnext" onclick="nav(1)">→</button>
+    </div>
+  </div>
+  <div class="cnt">
+
+<!-- S0: HTML คืออะไร -->
+<div class="slide active" id="s0">
+<div class="info"><b>เป้าหมาย Week 2:</b> สร้างหน้าเว็บ HTML เปล่าๆ แล้วทำให้สวยด้วย Tailwind โดยไม่ต้องเขียน CSS เลยแม้แต่บรรทัดเดียว</div>
+<div class="card">
+  <div class="ch"><div class="ci t">📄</div><div><div class="ct">HTML คืออะไร?</div></div></div>
+  <p style="font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:14px"><b style="color:var(--text)">HTML (HyperText Markup Language)</b> คือภาษาที่บอก browser ว่าหน้าเว็บมีอะไรบ้าง — ข้อความอยู่ที่ไหน รูปภาพอยู่ที่ไหน ปุ่มอยู่ที่ไหน HTML ไม่ใช่ภาษา programming — เป็นแค่ภาษาสำหรับ "จัดโครงสร้าง"</p>
+  <div class="g3">
+    <div style="background:var(--tsoft);border:1px solid var(--teal);border-radius:var(--rs);padding:13px;text-align:center"><div style="font-size:22px;margin-bottom:5px">📄</div><div style="font-size:13px;font-weight:600">HTML</div><div style="font-size:11px;color:var(--text2);margin-top:3px">โครงสร้าง — มีอะไรบ้าง</div></div>
+    <div style="background:var(--bsoft);border:1px solid var(--blue);border-radius:var(--rs);padding:13px;text-align:center"><div style="font-size:22px;margin-bottom:5px">🎨</div><div style="font-size:13px;font-weight:600">CSS / Tailwind</div><div style="font-size:11px;color:var(--text2);margin-top:3px">หน้าตา — สวยหรือไม่</div></div>
+    <div style="background:var(--asoft);border:1px solid var(--amber);border-radius:var(--rs);padding:13px;text-align:center"><div style="font-size:22px;margin-bottom:5px">⚡</div><div style="font-size:13px;font-weight:600">JavaScript</div><div style="font-size:11px;color:var(--text2);margin-top:3px">พฤติกรรม — ทำอะไรได้</div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="ch"><div class="ci a">💡</div><div><div class="ct">Setup — ไฟล์เดียวเปิดได้เลย</div><div class="cd">ไม่ต้อง npm ไม่ต้อง terminal</div></div></div>
+  <ul class="slist">
+    <li class="si"><div class="sn">1</div><div class="sb3"><div class="st2">สร้างไฟล์ใหม่ใน VS Code</div><div class="sd">ตั้งชื่อ <kbd>index.html</kbd> บันทึกบน Desktop</div></div></li>
+    <li class="si"><div class="sn">2</div><div class="sb3"><div class="st2">พิมพ์ ! แล้วกด Tab</div><div class="sd">VS Code จะสร้างโครงสร้าง HTML ให้อัตโนมัติ (Emmet)</div></div></li>
+    <li class="si"><div class="sn">3</div><div class="sb3"><div class="st2">เปิดในบราวเซอร์</div><div class="sd">ดับเบิลคลิกไฟล์ หรือลากไปวางใน Safari/Chrome ได้เลย</div></div></li>
+    <li class="si"><div class="sn">4</div><div class="sb3"><div class="st2">แก้โค้ด → กด Ctrl+S → กด Refresh</div><div class="sd">เห็นผลทันที ไม่ต้องรอ build</div></div></li>
+  </ul>
+</div>
+</div>
+
+<!-- S1: โครงสร้าง HTML -->
+<div class="slide" id="s1">
+<div class="card">
+  <div class="ch"><div class="ci t">🏗️</div><div><div class="ct">โครงสร้างพื้นฐานของ HTML</div></div></div>
+  <div class="code"><span class="cm">&lt;!-- โครงสร้างทุกไฟล์ HTML ต้องมีนี้ --&gt;</span>
+<span class="tg">&lt;!DOCTYPE html&gt;</span>
+<span class="tg">&lt;html</span> <span class="at">lang</span>=<span class="vl">"th"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;head&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">charset</span>=<span class="vl">"UTF-8"</span><span class="tg">&gt;</span>          <span class="cm">&lt;!-- ภาษาไทยไม่เพี้ยน --&gt;</span>
+  <span class="tg">&lt;meta</span> <span class="at">name</span>=<span class="vl">"viewport"</span> <span class="at">content</span>=<span class="vl">"width=device-width"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;title&gt;</span>ชื่อแท็บ<span class="tg">&lt;/title&gt;</span>
+  <span class="cm">&lt;!-- Tailwind CDN --&gt;</span>
+  <span class="tg">&lt;script</span> <span class="at">src</span>=<span class="vl">"https://cdn.tailwindcss.com"</span><span class="tg">&gt;&lt;/script&gt;</span>
+<span class="tg">&lt;/head&gt;</span>
+<span class="tg">&lt;body&gt;</span>
+
+  <span class="cm">&lt;!-- เนื้อหาทั้งหมดอยู่ในนี้ --&gt;</span>
+  <span class="tg">&lt;h1&gt;</span>สวัสดี World<span class="tg">&lt;/h1&gt;</span>
+
+<span class="tg">&lt;/body&gt;</span>
+<span class="tg">&lt;/html&gt;</span></div>
+  <div class="tip" style="margin-top:8px"><b>จำง่ายๆ:</b> &lt;head&gt; = ส่วนหัว (ข้อมูล, script) · &lt;body&gt; = ส่วนเนื้อหาที่เห็นบนหน้าจอ</div>
+</div>
+<div class="card">
+  <div class="ch"><div class="ci a">💡</div><div><div class="ct">Tag คืออะไร?</div></div></div>
+  <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">HTML ใช้ <b style="color:var(--text)">"Tag"</b> เพื่อบอก browser ว่าแต่ละส่วนคืออะไร Tag ส่วนใหญ่มีแบบเปิดและปิด</p>
+  <div class="code"><span class="tg">&lt;h1&gt;</span>ข้อความ<span class="tg">&lt;/h1&gt;</span>       <span class="cm">&lt;!-- เปิด/ปิด --&gt;</span>
+<span class="tg">&lt;img</span> <span class="at">src</span>=<span class="vl">"photo.jpg"</span><span class="tg">&gt;</span>    <span class="cm">&lt;!-- ปิดตัวเอง (self-closing) --&gt;</span></div>
+</div>
+</div>
+
+<!-- S2: Tags สำคัญ -->
+<div class="slide" id="s2">
+<div class="card">
+  <div class="ch"><div class="ci t">🔖</div><div><div class="ct">Tags ที่ใช้บ่อยในงานจริง</div></div></div>
+  <table class="tag-table">
+    <thead><tr><th>Tag</th><th>ใช้สำหรับ</th><th>ตัวอย่าง</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag-badge">&lt;h1&gt;–&lt;h6&gt;</span></td><td style="color:var(--text2)">หัวข้อ (h1 ใหญ่สุด)</td><td style="font-size:12px;color:var(--text2)">ชื่อหน้า, หัวข้อบทความ</td></tr>
+      <tr><td><span class="tag-badge">&lt;p&gt;</span></td><td style="color:var(--text2)">ย่อหน้าข้อความ</td><td style="font-size:12px;color:var(--text2)">คำอธิบาย, เนื้อหา</td></tr>
+      <tr><td><span class="tag-badge">&lt;div&gt;</span></td><td style="color:var(--text2)">กล่องจัดกลุ่ม (ไม่มีความหมายเฉพาะ)</td><td style="font-size:12px;color:var(--text2)">wrapper, container</td></tr>
+      <tr><td><span class="tag-badge">&lt;span&gt;</span></td><td style="color:var(--text2)">จัดกลุ่มแบบ inline</td><td style="font-size:12px;color:var(--text2)">ไฮไลต์คำ, badge</td></tr>
+      <tr><td><span class="tag-badge">&lt;img&gt;</span></td><td style="color:var(--text2)">รูปภาพ</td><td style="font-size:12px;color:var(--text2)"><kbd>src</kbd> = path รูป, <kbd>alt</kbd> = คำอธิบาย</td></tr>
+      <tr><td><span class="tag-badge">&lt;a&gt;</span></td><td style="color:var(--text2)">ลิงก์</td><td style="font-size:12px;color:var(--text2)"><kbd>href</kbd> = URL ปลายทาง</td></tr>
+      <tr><td><span class="tag-badge">&lt;button&gt;</span></td><td style="color:var(--text2)">ปุ่มกด</td><td style="font-size:12px;color:var(--text2)">submit form, trigger action</td></tr>
+      <tr><td><span class="tag-badge">&lt;input&gt;</span></td><td style="color:var(--text2)">ช่องกรอกข้อมูล</td><td style="font-size:12px;color:var(--text2)"><kbd>type="text"</kbd>, <kbd>type="email"</kbd></td></tr>
+      <tr><td><span class="tag-badge">&lt;ul&gt; &lt;li&gt;</span></td><td style="color:var(--text2)">รายการ (bullet)</td><td style="font-size:12px;color:var(--text2)">เมนู, รายการสินค้า</td></tr>
+      <tr><td><span class="tag-badge">&lt;nav&gt;</span></td><td style="color:var(--text2)">แถบ navigation</td><td style="font-size:12px;color:var(--text2)">เมนูด้านบนหน้าเว็บ</td></tr>
+      <tr><td><span class="tag-badge">&lt;section&gt;</span></td><td style="color:var(--text2)">ส่วนเนื้อหา</td><td style="font-size:12px;color:var(--text2)">Hero, About, Contact section</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="card">
+  <div class="ch"><div class="ci a">✅</div><div><div class="ct">ทดสอบ</div></div></div>
+  <p style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:12px">ต้องการสร้างปุ่ม "เข้าสู่ระบบ" ควรใช้ tag ใด?</p>
+  <div class="qo" id="q-tag">
+    <div class="qopt" onclick="qa('q-tag',this,false)">&lt;div&gt;</div>
+    <div class="qopt" onclick="qa('q-tag',this,false)">&lt;p&gt;</div>
+    <div class="qopt" onclick="qa('q-tag',this,true)">&lt;button&gt;</div>
+    <div class="qopt" onclick="qa('q-tag',this,false)">&lt;span&gt;</div>
+  </div>
+  <div class="qfb" id="q-tag-fb"></div>
+</div>
+</div>
+
+<!-- S3: Tailwind คืออะไร -->
+<div class="slide" id="s3">
+<div class="card">
+  <div class="ch"><div class="ci t">🎨</div><div><div class="ct">Tailwind CSS คืออะไร?</div></div></div>
+  <p style="font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:14px">แทนที่จะเขียน CSS เอง Tailwind มี <b style="color:var(--text)">utility class</b> สำเร็จรูปให้ใช้เลย — ใส่ class ลงใน HTML ก็สวยได้ทันที</p>
+  <div class="tw-demo">
+    <div class="tw-demo-header">🆚 CSS ปกติ vs Tailwind</div>
+    <div class="tw-demo-body">
+      <div class="tw-code-side">
+        <div class="tw-label" style="color:#F9A8D4">CSS ปกติ</div>
+        <span style="color:#F9A8D4">.my-button</span> {
+  background-color: blue;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+&lt;<span style="color:#F9A8D4">button</span> <span style="color:#FDE68A">class</span>=<span style="color:#A7F3D0">"my-button"</span>&gt;
+  กดเลย
+&lt;/<span style="color:#F9A8D4">button</span>&gt;</div>
+      <div class="tw-code-side" style="border-right:none">
+        <div class="tw-label" style="color:var(--teal)">Tailwind</div>
+        &lt;<span style="color:#F9A8D4">button</span> <span style="color:#FDE68A">class</span>=<span style="color:#A7F3D0">"bg-blue-500
+  text-white
+  px-4 py-2
+  rounded-lg
+  font-bold"</span>&gt;
+  กดเลย
+&lt;/<span style="color:#F9A8D4">button</span>&gt;</div>
+    </div>
+    <div style="background:#fff;padding:16px;border-top:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;gap:24px">
+      <button style="background:blue;color:white;padding:8px 16px;border-radius:8px;font-weight:bold;border:none;cursor:pointer;font-family:sans-serif">กดเลย</button>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded-lg font-bold border-none cursor-pointer" style="background:#3B82F6;color:white;padding:8px 16px;border-radius:8px;font-weight:700;border:none;cursor:pointer;font-family:sans-serif">กดเลย</button>
+    </div>
+  </div>
+  <div class="suc" style="margin-bottom:0">ผลลัพธ์เหมือนกัน แต่ Tailwind ไม่ต้องตั้งชื่อ class เอง ไม่ต้องสลับไฟล์ CSS — เขียนได้เลยใน HTML</div>
+</div>
+<div class="card">
+  <div class="ch"><div class="ci a">⚡</div><div><div class="ct">เพิ่ม Tailwind ในไฟล์ — 1 บรรทัด</div></div></div>
+  <div class="code"><span class="tg">&lt;head&gt;</span>
+  <span class="cm">&lt;!-- เพิ่มบรรทัดนี้ใน &lt;head&gt; --&gt;</span>
+  <span class="tg">&lt;script</span> <span class="at">src</span>=<span class="vl">"https://cdn.tailwindcss.com"</span><span class="tg">&gt;&lt;/script&gt;</span>
+<span class="tg">&lt;/head&gt;</span></div>
+  <div class="tip" style="margin-bottom:0"><b>CDN คืออะไร?</b> — โหลด Tailwind จากอินเทอร์เน็ตโดยตรง ไม่ต้องติดตั้งอะไรเพิ่ม เหมาะสำหรับเรียนและ prototype</div>
+</div>
+</div>
+
+<!-- S4: Typography -->
+<div class="slide" id="s4">
+<div class="card">
+  <div class="ch"><div class="ci t">✏️</div><div><div class="ct">Typography — จัดสไตล์ข้อความ</div></div></div>
+  <div class="tw-demo">
+    <div class="tw-demo-header">ขนาดตัวอักษร — text-{size}</div>
+    <div style="background:#fff;padding:18px;display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:12px;font-family:sans-serif;color:#374151"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:11px">text-xs</span> → <span style="font-size:12px">ข้อความเล็กมาก</span></div>
+      <div style="font-family:sans-serif;color:#374151"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:11px">text-sm</span> → <span style="font-size:14px">ข้อความเล็ก</span></div>
+      <div style="font-family:sans-serif;color:#374151"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:11px">text-base</span> → <span style="font-size:16px">ข้อความปกติ</span></div>
+      <div style="font-family:sans-serif;color:#374151"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:11px">text-lg</span> → <span style="font-size:18px">ข้อความใหญ่</span></div>
+      <div style="font-family:sans-serif;color:#374151"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:11px">text-2xl</span> → <span style="font-size:24px">ข้อความใหญ่มาก</span></div>
+      <div style="font-family:sans-serif;color:#374151"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:11px">text-4xl</span> → <span style="font-size:36px">หัวข้อใหญ่</span></div>
+    </div>
+  </div>
+  <div class="g2" style="gap:10px;margin-top:12px">
+    <div>
+      <div class="tw-label" style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">น้ำหนัก font-{weight}</div>
+      <div style="background:#fff;padding:14px;border-radius:var(--rs)">
+        <div style="font-family:sans-serif;color:#374151;margin-bottom:5px"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:10px">font-normal</span> ข้อความปกติ</div>
+        <div style="font-family:sans-serif;color:#374151;font-weight:500;margin-bottom:5px"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:10px">font-medium</span> กึ่งหนา</div>
+        <div style="font-family:sans-serif;color:#374151;font-weight:700;margin-bottom:5px"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:10px">font-bold</span> ตัวหนา</div>
+      </div>
+    </div>
+    <div>
+      <div class="tw-label" style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">การจัดชิด text-{align}</div>
+      <div style="background:#fff;padding:14px;border-radius:var(--rs)">
+        <div style="font-family:sans-serif;color:#374151;text-align:left;margin-bottom:5px;border-bottom:1px solid #f3f4f6;padding-bottom:5px"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:10px">text-left</span> ชิดซ้าย</div>
+        <div style="font-family:sans-serif;color:#374151;text-align:center;margin-bottom:5px;border-bottom:1px solid #f3f4f6;padding-bottom:5px"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:10px">text-center</span> กึ่งกลาง</div>
+        <div style="font-family:sans-serif;color:#374151;text-align:right"><span style="background:#dbeafe;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:10px">text-right</span> ชิดขวา</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S5: Spacing -->
+<div class="slide" id="s5">
+<div class="card">
+  <div class="ch"><div class="ci t">📐</div><div><div class="ct">Spacing — p (padding) และ m (margin)</div></div></div>
+  <div class="info"><b>กฎจำง่าย:</b> p = padding (พื้นที่ข้างใน) · m = margin (พื้นที่ข้างนอก) · ตัวเลข 1 = 4px, 2 = 8px, 4 = 16px, 8 = 32px</div>
+  <div class="tw-demo" style="margin-bottom:12px">
+    <div class="tw-demo-header">ทิศทาง Spacing</div>
+    <div style="background:var(--navy3);padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#7DD3FC;line-height:2">
+p-4 → ทุกด้าน
+px-4 → ซ้าย-ขวา
+py-4 → บน-ล่าง
+pt-4 → บน (top)
+pb-4 → ล่าง (bottom)
+pl-4 → ซ้าย (left)
+pr-4 → ขวา (right)</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#A7F3D0;line-height:2">
+m-4 → ทุกด้าน
+mx-4 → ซ้าย-ขวา
+my-4 → บน-ล่าง
+mt-4 → บน
+mb-4 → ล่าง
+mx-auto → กึ่งกลาง
+space-y-4 → ระหว่าง child</div>
+    </div>
+  </div>
+  <div class="tw-demo">
+    <div class="tw-demo-header">ตัวอย่างเปรียบเทียบ</div>
+    <div style="background:#fff;padding:20px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div>
+        <div style="font-family:monospace;font-size:10px;color:#6b7280;margin-bottom:6px">ไม่มี padding</div>
+        <div style="background:#3B82F6;color:white;font-family:sans-serif;font-size:13px">ข้อความ</div>
+      </div>
+      <div>
+        <div style="font-family:monospace;font-size:10px;color:#6b7280;margin-bottom:6px">p-2</div>
+        <div style="background:#3B82F6;color:white;padding:8px;font-family:sans-serif;font-size:13px">ข้อความ</div>
+      </div>
+      <div>
+        <div style="font-family:monospace;font-size:10px;color:#6b7280;margin-bottom:6px">px-6 py-3</div>
+        <div style="background:#3B82F6;color:white;padding:12px 24px;font-family:sans-serif;font-size:13px">ข้อความ</div>
+      </div>
+      <div>
+        <div style="font-family:monospace;font-size:10px;color:#6b7280;margin-bottom:6px">p-6</div>
+        <div style="background:#3B82F6;color:white;padding:24px;font-family:sans-serif;font-size:13px">ข้อความ</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S6: สี -->
+<div class="slide" id="s6">
+<div class="card">
+  <div class="ch"><div class="ci t">🌈</div><div><div class="ct">สี — bg-{color}-{shade} และ text-{color}-{shade}</div></div></div>
+  <div class="info"><b>Pattern จำง่าย:</b> ชื่อสี + เลข shade (100=อ่อน → 900=เข้ม) เช่น bg-blue-500, text-red-600, bg-gray-100</div>
+  <div id="color-demo" style="background:#fff;padding:18px;border-radius:var(--rs);margin-bottom:14px">
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="color-swatches"></div>
+    <div style="font-size:13px;color:#374151;font-family:sans-serif" id="color-info">👆 คลิกสีเพื่อดูชื่อ class</div>
+  </div>
+  <div class="tw-demo">
+    <div class="tw-demo-header">ตัวอย่างการใช้งาน</div>
+    <div style="background:var(--navy3);padding:14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#7DD3FC;line-height:2">
+&lt;div <span style="color:#FDE68A">class</span>=<span style="color:#A7F3D0">"bg-blue-500 text-white p-4"</span>&gt;
+  กล่องสีฟ้า ตัวอักษรขาว
+&lt;/div&gt;
+
+&lt;p <span style="color:#FDE68A">class</span>=<span style="color:#A7F3D0">"text-gray-600"</span>&gt;ข้อความสีเทา&lt;/p&gt;
+
+&lt;div <span style="color:#FDE68A">class</span>=<span style="color:#A7F3D0">"bg-green-100 text-green-800 p-3"</span>&gt;
+  แจ้งเตือนสำเร็จ
+&lt;/div&gt;</div>
+    <div style="background:#fff;padding:14px;display:flex;flex-direction:column;gap:8px">
+      <div style="background:#3B82F6;color:white;padding:16px;font-family:sans-serif;border-radius:4px">กล่องสีฟ้า ตัวอักษรขาว</div>
+      <p style="color:#4B5563;font-family:sans-serif">ข้อความสีเทา</p>
+      <div style="background:#D1FAE5;color:#065F46;padding:12px;font-family:sans-serif;border-radius:4px">แจ้งเตือนสำเร็จ</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S7: Width Height -->
+<div class="slide" id="s7">
+<div class="card">
+  <div class="ch"><div class="ci t">📏</div><div><div class="ct">Width & Height — w-{size} และ h-{size}</div></div></div>
+  <div class="tw-demo" style="margin-bottom:12px">
+    <div class="tw-demo-header">Width classes ที่ใช้บ่อย</div>
+    <div style="background:#fff;padding:16px;display:flex;flex-direction:column;gap:6px">
+      <div><div style="background:#3B82F6;color:white;font-family:monospace;font-size:11px;padding:4px 8px;width:25%;min-width:60px">w-1/4</div></div>
+      <div><div style="background:#3B82F6;color:white;font-family:monospace;font-size:11px;padding:4px 8px;width:50%">w-1/2</div></div>
+      <div><div style="background:#3B82F6;color:white;font-family:monospace;font-size:11px;padding:4px 8px;width:75%">w-3/4</div></div>
+      <div><div style="background:#3B82F6;color:white;font-family:monospace;font-size:11px;padding:4px 8px;width:100%">w-full</div></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div style="background:var(--navy3);border:1px solid var(--border);border-radius:var(--rs);padding:13px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Width ที่ใช้บ่อย</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#7DD3FC;line-height:2">w-full → 100%
+w-1/2 → 50%
+w-1/3 → 33%
+w-auto → อัตโนมัติ
+max-w-sm → สูงสุด 384px
+max-w-md → สูงสุด 448px
+max-w-lg → สูงสุด 512px
+max-w-screen-md → 768px</div>
+    </div>
+    <div style="background:var(--navy3);border:1px solid var(--border);border-radius:var(--rs);padding:13px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Height ที่ใช้บ่อย</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#A7F3D0;line-height:2">h-screen → 100vh
+h-full → 100%
+h-auto → อัตโนมัติ
+h-16 → 64px
+h-32 → 128px
+min-h-screen → ขั้นต่ำ 100vh</div>
+    </div>
+  </div>
+  <div class="info" style="margin-top:12px;margin-bottom:0"><b>mx-auto</b> + <b>max-w-md</b> = กล่อง centered กว้างพอดี — ใช้บ่อยมากกับ layout หลักของหน้า</div>
+</div>
+</div>
+
+<!-- S8: Border & Shadow -->
+<div class="slide" id="s8">
+<div class="card">
+  <div class="ch"><div class="ci t">🔲</div><div><div class="ct">Border, Rounded & Shadow</div></div></div>
+  <div style="background:#fff;padding:20px;border-radius:var(--rs);margin-bottom:14px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <div style="text-align:center">
+        <div style="width:60px;height:60px;background:#3B82F6;margin:0 auto 8px"></div>
+        <div style="font-family:monospace;font-size:11px;color:#6b7280">ไม่มี rounded</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:60px;height:60px;background:#3B82F6;border-radius:8px;margin:0 auto 8px"></div>
+        <div style="font-family:monospace;font-size:11px;color:#6b7280">rounded-lg</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:60px;height:60px;background:#3B82F6;border-radius:9999px;margin:0 auto 8px"></div>
+        <div style="font-family:monospace;font-size:11px;color:#6b7280">rounded-full</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:60px;height:60px;background:white;border:1px solid #3B82F6;margin:0 auto 8px"></div>
+        <div style="font-family:monospace;font-size:11px;color:#6b7280">border border-blue-500</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:60px;height:60px;background:white;border:2px solid #3B82F6;border-radius:8px;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);margin:0 auto 8px"></div>
+        <div style="font-family:monospace;font-size:11px;color:#6b7280">border-2 rounded-lg shadow</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:60px;height:60px;background:white;border-radius:12px;box-shadow:0 10px 15px -3px rgba(0,0,0,.2);margin:0 auto 8px"></div>
+        <div style="font-family:monospace;font-size:11px;color:#6b7280">rounded-xl shadow-lg</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:var(--navy3);border-radius:var(--rs);padding:13px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#7DD3FC;line-height:2">
+border → เส้นขอบ 1px
+border-2 → 2px · border-4 → 4px
+border-blue-500 → สีเส้นขอบ
+rounded-sm → เล็กน้อย
+rounded-md → กลาง
+rounded-lg → มาก
+rounded-xl / rounded-2xl → มากขึ้น
+rounded-full → วงกลม
+shadow-sm / shadow / shadow-md / shadow-lg / shadow-xl</div>
+</div>
+</div>
+
+<!-- S9: Class Explorer -->
+<div class="slide" id="s9">
+<div class="card">
+  <div class="ch"><div class="ci t">🔍</div><div><div class="ct">Class Explorer — คลิกดูผล</div><div class="cd">กดที่ class แล้วดู preview และคำอธิบาย</div></div></div>
+  <div class="cls-grid" id="cls-grid"></div>
+  <div class="tw-label" style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Preview</div>
+  <div class="cls-preview" id="cls-preview">
+    <div id="cls-el" style="font-family:sans-serif;font-size:16px;color:#374151;padding:8px">สวัสดี Tailwind</div>
+  </div>
+  <div class="cls-explain" id="cls-explain">👆 คลิก class ด้านบนเพื่อดูผลลัพธ์</div>
+</div>
+</div>
+
+<!-- S10: Challenge -->
+<div class="slide" id="s10">
+<div class="card">
+  <div class="ch"><div class="ci p">⚡</div><div><div class="ct">Challenge: สร้าง Profile Card</div><div class="cd">ใส่ Tailwind class ให้ได้ผลลัพธ์ตามเป้าหมาย</div></div></div>
+  <div class="challenge">
+    <div class="ch-title">🎯 เป้าหมาย — Card ที่ต้องการ</div>
+    <div class="ch-target">
+      <div style="background:white;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15);padding:24px;width:200px;text-align:center;font-family:sans-serif">
+        <div style="width:56px;height:56px;background:#3B82F6;border-radius:9999px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:white;font-size:24px">👤</div>
+        <div style="font-size:16px;font-weight:700;color:#111827;margin-bottom:4px">สมชาย ใจดี</div>
+        <div style="font-size:13px;color:#6B7280">นักพัฒนาเว็บ</div>
+        <div style="margin-top:12px;background:#3B82F6;color:white;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;display:inline-block">Follow</div>
+      </div>
+    </div>
+    <div class="ch-desc">เติม Tailwind class ให้ครบในโค้ดด้านล่าง แล้วกด "แสดงผล" เพื่อดูว่าถูกต้องไหม</div>
+    <textarea class="textarea-code" id="challenge-code" rows="12">&lt;div class="___"&gt;
+  &lt;div class="w-14 h-14 ___ rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl"&gt;👤&lt;/div&gt;
+  &lt;h2 class="___ font-bold text-gray-900 mb-1"&gt;สมชาย ใจดี&lt;/h2&gt;
+  &lt;p class="text-sm ___"&gt;นักพัฒนาเว็บ&lt;/p&gt;
+  &lt;button class="mt-3 ___ text-white px-4 py-1.5 rounded-full text-xs font-semibold"&gt;Follow&lt;/button&gt;
+&lt;/div&gt;</textarea>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <button class="btn pr" onclick="runChallenge()">▶ แสดงผล</button>
+      <button class="btn" onclick="showHint()">💡 Hint</button>
+      <button class="btn" onclick="showAnswer()">✅ เฉลย</button>
+    </div>
+    <div id="hint-box" style="display:none;margin-top:10px;padding:11px 14px;background:var(--asoft);border-radius:var(--rs);font-size:13px;color:#FDE68A;line-height:1.8">
+      <b>Hint:</b><br>
+      • กล่องหลัก: bg-white, rounded-xl, shadow-lg, p-6, text-center, w-48 หรือ max-w-xs, mx-auto<br>
+      • วงกลม avatar: bg-blue-500<br>
+      • ชื่อ: text-base หรือ text-lg<br>
+      • อาชีพ: text-gray-500<br>
+      • ปุ่ม: bg-blue-500
+    </div>
+  </div>
+  <div class="tw-label" style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">ผลลัพธ์</div>
+  <div id="ch-result" style="background:#fff;border-radius:var(--rs);padding:20px;min-height:100px;display:flex;align-items:center;justify-content:center">
+    <span style="font-size:13px;color:#9CA3AF;font-family:sans-serif">กดแสดงผลเพื่อดูที่นี่</span>
+  </div>
+</div>
+</div>
+
+<!-- S11: QUIZ -->
+<div class="slide" id="s11">
+<div class="card">
+  <div class="ch"><div class="ci a">📝</div><div><div class="ct">แบบทดสอบ Week 2</div><div class="cd">8 ข้อ</div></div></div>
+  <div id="qga2">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px">
+      <div style="font-size:12px;color:var(--text2)" id="qgn2">ข้อ 1 / 8</div>
+      <div style="flex:1;background:var(--navy3);border-radius:20px;height:4px;overflow:hidden"><div style="height:100%;background:var(--teal);border-radius:20px;transition:width .5s" id="qgbar2" style="width:12%"></div></div>
+      <div style="font-size:12px;font-weight:600;color:var(--amber);background:var(--asoft);padding:3px 11px;border-radius:20px" id="qgsco2">⭐ 0</div>
+    </div>
+    <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:16px;line-height:1.6" id="qgq2"></div>
+    <div style="display:flex;flex-direction:column;gap:7px" id="qgopts2"></div>
+    <div class="qfb" id="qgfb2"></div>
+    <button class="btn pr" id="qgnx2" onclick="nextQ2()" style="margin-top:10px;display:none">ข้อถัดไป →</button>
+  </div>
+  <div id="qfin2" style="display:none">
+    <div style="text-align:center;padding:26px">
+      <div style="font-size:48px;margin-bottom:10px" id="femi2">🎉</div>
+      <div style="font-size:28px;letter-spacing:7px;margin:8px 0" id="fst2"></div>
+      <div style="font-size:32px;font-weight:700;color:var(--teal)" id="fsco2"></div>
+      <div style="font-size:14px;color:var(--text2);margin:6px 0 18px" id="flbl2"></div>
+      <button class="btn pr" onclick="initQ2()">ทำอีกครั้ง</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S12: SUMMARY -->
+<div class="slide" id="s12">
+<div class="card">
+  <div class="ch"><div class="ci t">🏁</div><div><div class="ct">สรุป Week 2</div></div></div>
+  <ul class="slist">
+    <li class="si"><div class="sn">✓</div><div class="sb3"><div class="st2">โครงสร้าง HTML</div><div class="sd">DOCTYPE, head, body, Emmet shortcut (!+Tab)</div></div></li>
+    <li class="si"><div class="sn">✓</div><div class="sb3"><div class="st2">Tags สำคัญ</div><div class="sd">h1-h6, p, div, span, button, input, a, img, ul/li, nav, section</div></div></li>
+    <li class="si"><div class="sn">✓</div><div class="sb3"><div class="st2">Tailwind via CDN</div><div class="sd">เพิ่ม 1 บรรทัดใน head ก็ใช้ได้เลย</div></div></li>
+    <li class="si"><div class="sn">✓</div><div class="sb3"><div class="st2">Typography</div><div class="sd">text-{size}, font-bold, text-center, text-{color}</div></div></li>
+    <li class="si"><div class="sn">✓</div><div class="sb3"><div class="st2">Spacing</div><div class="sd">p-{n}, m-{n}, px/py, mx-auto, space-y-{n}</div></div></li>
+    <li class="si"><div class="sn">✓</div><div class="sb3"><div class="st2">สี</div><div class="sd">bg-{color}-{shade}, text-{color}-{shade}</div></div></li>
+    <li class="si"><div class="sn">✓</div><div class="sb3"><div class="st2">Width/Height + Border/Shadow</div><div class="sd">w-full, max-w-md, rounded-lg, shadow-md</div></div></li>
+  </ul>
+</div>
+<div class="card">
+  <div class="ch"><div class="ci a">📋</div><div><div class="ct">ชิ้นงาน Week 2</div></div></div>
+  <ul class="slist">
+    <li class="si"><div class="sn">1</div><div class="sb3"><div class="st2">สร้าง Profile Card ของตัวเอง</div><div class="sd">ใส่ชื่อจริง, ตำแหน่ง/แผนก, ปุ่ม 1 ปุ่ม — บันทึกเป็น profile.html</div></div></li>
+    <li class="si"><div class="sn">2</div><div class="sb3"><div class="st2">Push ขึ้น GitHub</div><div class="sd">git add . → git commit -m "Week 2 profile card" → git push</div></div></li>
+  </ul>
+  <div class="suc" style="margin-top:10px"><b>Week 3:</b> Tailwind Layout — Flexbox, Grid, Responsive Design 📐</div>
+</div>
+</div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const T=13,TL=["HTML คืออะไร","โครงสร้าง HTML","Tags สำคัญ","Tailwind คืออะไร","Typography","Spacing","สี Background & Text","Width & Height","Border & Shadow","🔍 Class Explorer","⚡ Challenge: Card","📝 แบบทดสอบ","สรุป Week 2"],SB=["ช่วงที่ 1 · ทบทวน HTML","ช่วงที่ 1 · ทบทวน HTML","ช่วงที่ 1 · ทบทวน HTML","ช่วงที่ 2 · Tailwind","ช่วงที่ 2 · Tailwind","ช่วงที่ 2 · Tailwind","ช่วงที่ 2 · Tailwind","ช่วงที่ 2 · Tailwind","ช่วงที่ 2 · Tailwind","กิจกรรม","กิจกรรม","ทดสอบความรู้","สรุปและมอบงาน"];
+let cur=0;
+function go(i){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('n'+cur).classList.remove('active');
+  cur=i;
+  document.getElementById('s'+cur).classList.add('active');
+  document.getElementById('n'+cur).classList.add('active');
+  document.getElementById('tbtl').textContent=TL[cur];
+  document.getElementById('tbsb').textContent=SB[cur];
+  document.getElementById('bprev').disabled=cur===0;
+  document.getElementById('bnext').disabled=cur===T-1;
+  document.getElementById('olbl').textContent='สไลด์ '+(cur+1)+' / '+T;
+  document.getElementById('oprog').style.width=((cur+1)/T*100)+'%';
+  buildDots();
+  document.querySelector('.cnt').scrollTo({top:0,behavior:'smooth'});
+  if(cur===9)initExplorer();
+  if(cur===11)initQ2();
+}
+function nav(d){if(cur+d>=0&&cur+d<T)go(cur+d);}
+function buildDots(){
+  const el=document.getElementById('sdots');el.innerHTML='';
+  for(let i=0;i<T;i++){const d=document.createElement('div');d.className='dot'+(i===cur?' active':i<cur?' done':'');d.onclick=(j=>()=>go(j))(i);el.appendChild(d);}
+}
+buildDots();
+
+// QUIZ SIMPLE
+function qa(qid,el,c){
+  document.querySelectorAll('#'+qid+' .qopt').forEach(o=>o.onclick=null);
+  el.classList.add(c?'correct':'wrong');
+  const fb=document.getElementById(qid+'-fb');
+  fb.className='qfb '+(c?'ok':'no');
+  fb.textContent=c?'✅ ถูกต้อง!':'❌ ลองดูตารางข้างบนอีกครั้ง — <button> ใช้สำหรับปุ่มโดยเฉพาะ';
+}
+
+// COLOR SWATCHES
+const COLORS=[
+  {name:'slate',shades:[{s:100,h:'#F1F5F9',t:'#0F172A'},{s:300,h:'#CBD5E1',t:'#0F172A'},{s:500,h:'#64748B',t:'#fff'},{s:700,h:'#334155',t:'#fff'},{s:900,h:'#0F172A',t:'#fff'}]},
+  {name:'blue',shades:[{s:100,h:'#DBEAFE',t:'#1E3A8A'},{s:300,h:'#93C5FD',t:'#1E3A8A'},{s:500,h:'#3B82F6',t:'#fff'},{s:700,h:'#1D4ED8',t:'#fff'},{s:900,h:'#1E3A8A',t:'#fff'}]},
+  {name:'teal',shades:[{s:100,h:'#CCFBF1',t:'#134E4A'},{s:300,h:'#5EEAD4',t:'#134E4A'},{s:500,h:'#14B8A6',t:'#fff'},{s:700,h:'#0F766E',t:'#fff'},{s:900,h:'#134E4A',t:'#fff'}]},
+  {name:'green',shades:[{s:100,h:'#DCFCE7',t:'#14532D'},{s:300,h:'#86EFAC',t:'#14532D'},{s:500,h:'#22C55E',t:'#fff'},{s:700,h:'#15803D',t:'#fff'},{s:900,h:'#14532D',t:'#fff'}]},
+  {name:'amber',shades:[{s:100,h:'#FEF3C7',t:'#78350F'},{s:300,h:'#FCD34D',t:'#78350F'},{s:500,h:'#F59E0B',t:'#fff'},{s:700,h:'#B45309',t:'#fff'},{s:900,h:'#78350F',t:'#fff'}]},
+  {name:'red',shades:[{s:100,h:'#FEE2E2',t:'#7F1D1D'},{s:300,h:'#FCA5A5',t:'#7F1D1D'},{s:500,h:'#EF4444',t:'#fff'},{s:700,h:'#B91C1C',t:'#fff'},{s:900,h:'#7F1D1D',t:'#fff'}]},
+];
+const sw=document.getElementById('color-swatches');
+COLORS.forEach(c=>{
+  c.shades.forEach(s=>{
+    const d=document.createElement('div');
+    d.style.cssText=`width:36px;height:36px;border-radius:6px;background:${s.h};cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:${s.t};font-family:monospace;transition:transform .15s`;
+    d.title=`${c.name}-${s.s}`;
+    d.textContent=s.s;
+    d.onmouseenter=()=>{d.style.transform='scale(1.2)';};
+    d.onmouseleave=()=>{d.style.transform='scale(1)';};
+    d.onclick=()=>{
+      document.getElementById('color-info').innerHTML=`<b style="font-family:monospace">bg-${c.name}-${s.s}</b> → สีพื้นหลัง &nbsp;|&nbsp; <b style="font-family:monospace">text-${c.name}-${s.s}</b> → สีตัวอักษร`;
+      document.getElementById('color-info').style.color=s.h===d.style.background?'#374151':'#374151';
+    };
+    sw.appendChild(d);
+  });
+});
+
+// CLASS EXPLORER
+const CLASSES=[
+  {cls:'text-xl font-bold',desc:'<b>text-xl</b> = ขนาด 20px · <b>font-bold</b> = ตัวหนา',bg:'',color:'#111827'},
+  {cls:'text-blue-600',desc:'<b>text-blue-600</b> = สีตัวอักษรฟ้าเข้ม',bg:'',color:'#2563EB'},
+  {cls:'bg-yellow-300 p-4',desc:'<b>bg-yellow-300</b> = พื้นหลังเหลือง · <b>p-4</b> = padding ทุกด้าน 16px',bg:'#FDE047',color:'#111827'},
+  {cls:'rounded-full bg-blue-500 text-white px-6 py-2',desc:'<b>rounded-full</b> = โค้งมนมาก (pill shape) · เหมาะสำหรับปุ่ม badge',bg:'#3B82F6',color:'#fff'},
+  {cls:'border-2 border-red-500 p-3 rounded-lg',desc:'<b>border-2</b> = เส้นขอบ 2px · <b>border-red-500</b> = สีแดง · <b>rounded-lg</b> = มุมโค้ง',bg:'#fff',color:'#111827',border:'2px solid #EF4444'},
+  {cls:'shadow-xl bg-white p-5 rounded-2xl',desc:'<b>shadow-xl</b> = เงาใหญ่ · <b>rounded-2xl</b> = โค้งมากขึ้น เหมาะ card',bg:'#fff',color:'#111827',shadow:'0 20px 25px -5px rgba(0,0,0,.15)'},
+  {cls:'opacity-50',desc:'<b>opacity-50</b> = โปร่งแสง 50% ใช้สำหรับ disabled state',bg:'#3B82F6',color:'#fff',opacity:'.5'},
+  {cls:'uppercase tracking-widest text-sm text-gray-500',desc:'<b>uppercase</b> = ตัวพิมพ์ใหญ่ · <b>tracking-widest</b> = ระยะห่างตัวอักษรกว้างมาก เหมาะ label',bg:'',color:'#6B7280',extra:'text-transform:uppercase;letter-spacing:.2em'},
+  {cls:'italic text-gray-600',desc:'<b>italic</b> = ตัวเอียง · <b>text-gray-600</b> = สีเทา เหมาะ quote',bg:'',color:'#4B5563',extra:'font-style:italic'},
+  {cls:'underline text-blue-500',desc:'<b>underline</b> = ขีดเส้นใต้ · ใช้กับ link เพื่อแสดงว่ากดได้',bg:'',color:'#3B82F6',extra:'text-decoration:underline'},
+  {cls:'line-through text-gray-400',desc:'<b>line-through</b> = ขีดทับ · ใช้แสดงราคาเก่า หรือสิ่งที่ถูกลบ',bg:'',color:'#9CA3AF',extra:'text-decoration:line-through'},
+  {cls:'bg-gradient-to-r from-blue-500 to-teal-400 text-white p-4 rounded-xl',desc:'<b>bg-gradient-to-r</b> = gradient ซ้าย→ขวา · <b>from-</b> สีเริ่ม · <b>to-</b> สีสิ้นสุด',bg:'linear-gradient(to right,#3B82F6,#2DD4BF)',color:'#fff'},
+];
+let clsActive=null;
+function initExplorer(){
+  const grid=document.getElementById('cls-grid');
+  grid.innerHTML='';
+  CLASSES.forEach((c,i)=>{
+    const b=document.createElement('div');
+    b.className='cls-btn';
+    b.textContent=c.cls.split(' ')[0]+(c.cls.includes(' ')?'…':'');
+    b.title=c.cls;
+    b.onclick=()=>showCls(c,b,i);
+    grid.appendChild(b);
+  });
+}
+function showCls(c,btn,i){
+  document.querySelectorAll('.cls-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const el=document.getElementById('cls-el');
+  el.textContent='สวัสดี Tailwind';
+  let style=`font-family:sans-serif;font-size:16px;padding:10px 18px;`;
+  if(c.bg)style+=`background:${c.bg};`;
+  if(c.color)style+=`color:${c.color};`;
+  if(c.border)style+=`border:${c.border};`;
+  if(c.shadow)style+=`box-shadow:${c.shadow};`;
+  if(c.opacity)style+=`opacity:${c.opacity};`;
+  if(c.extra)style+=c.extra+';';
+  if(c.cls.includes('rounded-full'))style+='border-radius:9999px;';
+  else if(c.cls.includes('rounded-2xl'))style+='border-radius:16px;';
+  else if(c.cls.includes('rounded-xl'))style+='border-radius:12px;';
+  else if(c.cls.includes('rounded-lg'))style+='border-radius:8px;';
+  if(c.cls.includes('font-bold'))style+='font-weight:700;';
+  if(c.cls.includes('text-xl'))style+='font-size:20px;';
+  if(c.cls.includes('text-sm'))style+='font-size:14px;';
+  el.style.cssText=style;
+  document.getElementById('cls-explain').innerHTML='<kbd style="font-family:JetBrains Mono,monospace;font-size:11px;background:var(--navy);border:1px solid var(--border);border-bottom:2px solid var(--border);border-radius:5px;padding:2px 7px;color:var(--text)">'+c.cls+'</kbd><br><br>'+c.desc;
+}
+
+// CHALLENGE
+function runChallenge(){
+  const code=document.getElementById('challenge-code').value;
+  const el=document.getElementById('ch-result');
+  const wrapper=document.createElement('div');
+  wrapper.innerHTML=code;
+  el.innerHTML='';
+  el.style.cssText='background:#fff;border-radius:var(--rs);padding:20px;min-height:100px;display:flex;align-items:center;justify-content:center';
+  el.appendChild(wrapper);
+  // Load Tailwind CDN for preview
+  if(!document.getElementById('tw-cdn')){
+    const s=document.createElement('script');
+    s.id='tw-cdn';s.src='https://cdn.tailwindcss.com';document.head.appendChild(s);
+  }
+}
+function showHint(){
+  document.getElementById('hint-box').style.display='block';
+}
+function showAnswer(){
+  document.getElementById('challenge-code').value=`<div class="bg-white rounded-xl shadow-lg p-6 text-center w-48 mx-auto">
+  <div class="w-14 h-14 bg-blue-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl">👤</div>
+  <h2 class="text-base font-bold text-gray-900 mb-1">สมชาย ใจดี</h2>
+  <p class="text-sm text-gray-500">นักพัฒนาเว็บ</p>
+  <button class="mt-3 bg-blue-500 text-white px-4 py-1.5 rounded-full text-xs font-semibold">Follow</button>
+</div>`;
+  runChallenge();
+}
+
+// QUIZ 2
+const QS2=[
+  {q:'class ใดใช้ทำให้ตัวอักษรหนา?',o:['text-bold','font-heavy','font-bold','bold-text'],a:2,f:'font-bold คือ Tailwind class สำหรับ font-weight: 700'},
+  {q:'อยากให้ div มี padding ซ้าย-ขวา 16px ใช้ class อะไร?',o:['p-4','py-4','mx-4','px-4'],a:3,f:'px-4 = padding left+right · py-4 = padding top+bottom · p-4 = ทุกด้าน'},
+  {q:'bg-blue-500 หมายความว่าอะไร?',o:['เส้นขอบสีฟ้า','สีพื้นหลังฟ้าระดับ 500','สีตัวอักษรฟ้า','ขนาดฟ้า 500px'],a:1,f:'bg = background · blue = สี · 500 = ระดับความเข้ม (100=อ่อน, 900=เข้ม)'},
+  {q:'rounded-full ทำให้รูปร่างเป็นอะไร?',o:['สี่เหลี่ยม','สามเหลี่ยม','วงกลม/pill','หกเหลี่ยม'],a:2,f:'rounded-full = border-radius: 9999px → วงกลมถ้า w=h หรือ pill shape'},
+  {q:'max-w-md ใช้เพื่ออะไร?',o:['กำหนดความสูงสูงสุด','กำหนดความกว้างขั้นต่ำ','กำหนดความกว้างสูงสุด','ซ่อน element'],a:2,f:'max-w-md = max-width: 448px — ป้องกันไม่ให้กว้างเกินนี้ ใช้คู่กับ mx-auto เพื่อ center'},
+  {q:'class ใดทำให้ element อยู่กึ่งกลางแนวนอน?',o:['text-center','justify-center','mx-auto','center-x'],a:2,f:'mx-auto = margin-left: auto + margin-right: auto → ดัน element ไปกลาง'},
+  {q:'text-gray-600 ต่างจาก text-gray-200 อย่างไร?',o:['600 ใหญ่กว่า 200','600 เข้มกว่า 200','600 อ่อนกว่า 200','ไม่ต่างกัน'],a:1,f:'เลขยิ่งมาก สียิ่งเข้ม — 100-200 อ่อน, 500 กลาง, 700-900 เข้ม'},
+  {q:'shadow-lg ใช้สำหรับอะไร?',o:['เพิ่มเส้นขอบหนา','เพิ่มเงาให้ element','เปลี่ยนสี','ทำให้โปร่งแสง'],a:1,f:'shadow-{size} เพิ่ม box-shadow — ใช้ทำ card ให้ดูลอยขึ้นมา'},
+];
+let qi2=0,qs2=0;
+function initQ2(){qi2=0;qs2=0;document.getElementById('qga2').style.display='block';document.getElementById('qfin2').style.display='none';rQ2();}
+function rQ2(){
+  const q=QS2[qi2];
+  document.getElementById('qgn2').textContent='ข้อ '+(qi2+1)+' / '+QS2.length;
+  document.getElementById('qgbar2').style.width=((qi2+1)/QS2.length*100)+'%';
+  document.getElementById('qgsco2').textContent='⭐ '+qs2;
+  document.getElementById('qgq2').textContent=q.q;
+  document.getElementById('qgfb2').className='qfb';
+  document.getElementById('qgnx2').style.display='none';
+  const oe=document.getElementById('qgopts2');oe.innerHTML='';
+  const L=['A','B','C','D'];
+  q.o.forEach((o,i)=>{
+    const d=document.createElement('div');d.className='qopt';
+    d.innerHTML='<span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--navy3);font-size:10px;font-weight:600;color:var(--text3);align-items:center;justify-content:center;margin-right:9px;flex-shrink:0">'+L[i]+'</span>'+o;
+    d.onclick=()=>ansQ2(i,d);oe.appendChild(d);
+  });
+}
+function ansQ2(i,el){
+  const q=QS2[qi2];
+  document.querySelectorAll('#qgopts2 .qopt').forEach(o=>o.onclick=null);
+  const c=i===q.a;el.classList.add(c?'correct':'wrong');
+  if(c)qs2+=10;
+  document.querySelectorAll('#qgopts2 .qopt')[q.a].classList.add('correct');
+  const fb=document.getElementById('qgfb2');fb.className='qfb '+(c?'ok':'no');
+  fb.textContent=(c?'✅ ':'❌ ')+q.f;
+  document.getElementById('qgnx2').style.display='block';
+}
+function nextQ2(){
+  qi2++;
+  if(qi2>=QS2.length){showFin2();return;}rQ2();
+}
+function showFin2(){
+  document.getElementById('qga2').style.display='none';document.getElementById('qfin2').style.display='block';
+  const p=Math.round(qs2/(QS2.length*10)*100);
+  document.getElementById('femi2').textContent=p>=90?'🏆':p>=70?'🎉':'💪';
+  document.getElementById('fst2').textContent=p>=90?'⭐⭐⭐':p>=70?'⭐⭐':'⭐';
+  document.getElementById('fsco2').textContent=qs2+' / '+(QS2.length*10)+' คะแนน';
+  document.getElementById('flbl2').textContent=p>=90?'ยอดเยี่ยม! Tailwind ไม่มีปัญหา':p>=70?'ดี! ทบทวนข้อที่พลาด':'ลองทำใหม่ — ดูสไลด์ Typography และ Spacing อีกครั้ง';
+}
+</script>
+</body>
+</html>
