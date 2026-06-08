@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morning Glow Café</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-amber-50 text-gray-800">
+
+  <!-- ════════════════════════════════════
+       ส่วนบนสุดของหน้า
+  ════════════════════════════════════ -->
+  <div class="site-header bg-amber-900 text-white shadow-lg">
+    <div class="top-bar max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+
+      <div class="logo text-2xl font-bold tracking-wide">
+        ☕ Morning Glow Café
+      </div>
+
+      <div class="menu-links flex gap-8 text-sm font-medium">
+        <a href="#menu" class="hover:text-amber-300 transition">เมนู</a>
+        <a href="#about" class="hover:text-amber-300 transition">เกี่ยวกับเรา</a>
+        <a href="#contact" class="hover:text-amber-300 transition">ติดต่อ</a>
+      </div>
+
+      <div class="open-badge bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">
+        เปิดอยู่ตอนนี้ ✓
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════
+       เนื้อหาหลักของหน้า
+  ════════════════════════════════════ -->
+  <div class="page-main">
+
+    <!-- ── Hero ── -->
+    <div class="hero-section bg-gradient-to-r from-amber-800 to-orange-700 text-white py-20">
+      <div class="max-w-3xl mx-auto px-6 text-center">
+        <div class="text-amber-300 text-sm font-semibold uppercase tracking-widest mb-3">
+          คาเฟ่อบอุ่น กลางใจเมือง
+        </div>
+        <h1 class="text-5xl font-bold mb-4 leading-tight">
+          เริ่มต้นวันดีๆ<br>ด้วยกาแฟสักแก้ว
+        </h1>
+        <p class="text-amber-200 text-lg mb-8 max-w-xl mx-auto">
+          เมล็ดกาแฟคัดพิเศษจากดอย บรรยากาศอบอุ่น นั่งได้ทั้งวัน
+        </p>
+        <div class="flex gap-4 justify-center flex-wrap">
+          <a href="#menu" class="bg-white text-amber-900 font-semibold px-8 py-3 rounded-full hover:bg-amber-100 transition">
+            ดูเมนู
+          </a>
+          <a href="#about" class="border border-white text-white px-8 py-3 rounded-full hover:bg-white hover:text-amber-900 transition">
+            เกี่ยวกับเรา
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── เมนูทั้งหมด ── -->
+    <div id="menu" class="menu-section max-w-5xl mx-auto px-6 py-16">
+
+      <div class="section-heading text-center mb-12">
+        <h2 class="text-3xl font-bold text-amber-900">เมนูของเรา</h2>
+        <p class="text-gray-500 mt-2">วัตถุดิบสดใหม่ทุกวัน คัดมาเพื่อคุณโดยเฉพาะ</p>
+      </div>
+
+      <!-- หมวด: เครื่องดื่ม -->
+      <div class="category-drinks mb-12">
+        <div class="category-label flex items-center gap-3 mb-6">
+          <div class="h-px flex-1 bg-amber-200"></div>
+          <h3 class="text-amber-700 font-bold text-lg px-4">☕ เครื่องดื่ม</h3>
+          <div class="h-px flex-1 bg-amber-200"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <img src="https://picsum.photos/seed/americano/400/250" alt="อเมริกาโน่" class="w-full h-44 object-cover">
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">อเมริกาโน่</h4>
+                <span class="text-amber-700 font-bold">฿65</span>
+              </div>
+              <p class="text-gray-500 text-sm">กาแฟ espresso ผสมน้ำร้อน กลมกล่อม ไม่ขม</p>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <div class="relative">
+              <img src="https://picsum.photos/seed/latte/400/250" alt="ลาเต้" class="w-full h-44 object-cover">
+              <div class="bestseller-badge absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                ขายดี 🔥
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">ลาเต้</h4>
+                <span class="text-amber-700 font-bold">฿75</span>
+              </div>
+              <p class="text-gray-500 text-sm">espresso + นมสด ครีมมี่ เนียนละมุน</p>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <img src="https://picsum.photos/seed/thaitea/400/250" alt="ชาไทย" class="w-full h-44 object-cover">
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">ชาไทยนมสด</h4>
+                <span class="text-amber-700 font-bold">฿55</span>
+              </div>
+              <p class="text-gray-500 text-sm">ชาไทยต้นตำรับ หวานมัน หอมชา</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- หมวด: ขนม -->
+      <div class="category-desserts mb-12">
+        <div class="category-label flex items-center gap-3 mb-6">
+          <div class="h-px flex-1 bg-amber-200"></div>
+          <h3 class="text-amber-700 font-bold text-lg px-4">🍰 ขนม</h3>
+          <div class="h-px flex-1 bg-amber-200"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <img src="https://picsum.photos/seed/brownie/400/250" alt="บราวนี่" class="w-full h-44 object-cover">
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">บราวนี่ช็อกโกแลต</h4>
+                <span class="text-amber-700 font-bold">฿65</span>
+              </div>
+              <p class="text-gray-500 text-sm">บราวนี่เนื้อแน่น ช็อกโกแลตเข้มข้น อุ่นๆ ดีมาก</p>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <div class="relative">
+              <img src="https://picsum.photos/seed/bananacake/400/250" alt="เค้กกล้วยหอม" class="w-full h-44 object-cover">
+              <div class="new-badge absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                ใหม่ ✨
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">เค้กกล้วยหอม</h4>
+                <span class="text-amber-700 font-bold">฿60</span>
+              </div>
+              <p class="text-gray-500 text-sm">เค้กกล้วยหอมโฮมเมด หอมหวานตามธรรมชาติ</p>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <img src="https://picsum.photos/seed/croissant/400/250" alt="ครัวซองต์" class="w-full h-44 object-cover">
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">ครัวซองต์เนย</h4>
+                <span class="text-amber-700 font-bold">฿55</span>
+              </div>
+              <p class="text-gray-500 text-sm">อบใหม่ทุกเช้า กรอบนอก นุ่มใน</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- หมวด: อาหาร -->
+      <div class="category-food">
+        <div class="category-label flex items-center gap-3 mb-6">
+          <div class="h-px flex-1 bg-amber-200"></div>
+          <h3 class="text-amber-700 font-bold text-lg px-4">🍳 อาหาร</h3>
+          <div class="h-px flex-1 bg-amber-200"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <img src="https://picsum.photos/seed/toast/400/250" alt="โทสต์" class="w-full h-44 object-cover">
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">โทสต์หน้ากรอบ</h4>
+                <span class="text-amber-700 font-bold">฿55</span>
+              </div>
+              <p class="text-gray-500 text-sm">ขนมปังโฮลวีต ทาเนยแล้วอบกรอบ เสิร์ฟกับแยม</p>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <div class="relative">
+              <img src="https://picsum.photos/seed/sandwich/400/250" alt="แซนวิชไก่" class="w-full h-44 object-cover">
+              <div class="bestseller-badge absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                ขายดี 🔥
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">แซนวิชไก่ย่าง</h4>
+                <span class="text-amber-700 font-bold">฿75</span>
+              </div>
+              <p class="text-gray-500 text-sm">ไก่ย่างหมักสมุนไพร ผักสด ซอสมายองเนส</p>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+            <img src="https://picsum.photos/seed/eggs/400/250" alt="ไข่เบเนดิกต์" class="w-full h-44 object-cover">
+            <div class="p-4">
+              <div class="flex items-start justify-between mb-1">
+                <h4 class="font-bold text-gray-800">ไข่เบเนดิกต์</h4>
+                <span class="text-amber-700 font-bold">฿89</span>
+              </div>
+              <p class="text-gray-500 text-sm">ไข่ลวก ซอส Hollandaise บน English muffin</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- end menu-section -->
+
+
+    <!-- ── เกี่ยวกับเรา ── -->
+    <div id="about" class="about-section bg-amber-100 py-16">
+      <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row gap-10 items-center">
+
+        <div class="about-image md:w-1/2">
+          <img src="https://picsum.photos/seed/cafeinterior/600/400"
+               alt="บรรยากาศภายในร้าน"
+               class="rounded-2xl shadow-lg w-full object-cover">
+        </div>
+
+        <div class="about-text md:w-1/2">
+          <div class="text-amber-600 font-semibold text-sm uppercase tracking-wider mb-2">เกี่ยวกับเรา</div>
+          <h2 class="text-3xl font-bold text-amber-900 mb-4">เริ่มต้นจากความรักในกาแฟ</h2>
+          <p class="text-gray-600 mb-4 leading-relaxed">
+            Morning Glow Café เปิดมาตั้งแต่ปี 2562 จากความฝันเล็กๆ ของสองเพื่อนรักที่อยากสร้างพื้นที่อบอุ่น
+            ให้ทุกคนมาพักผ่อน ทำงาน หรือนั่งคุยกัน
+          </p>
+          <p class="text-gray-600 mb-6 leading-relaxed">
+            เราคัดเมล็ดกาแฟจากดอยอินทนนท์โดยตรงจากเกษตรกร และอบขนมสดทุกเช้า
+            เพื่อให้คุณได้รับของที่ดีที่สุดทุกวัน
+          </p>
+          <div class="flex gap-6">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-amber-700">5+</div>
+              <div class="text-sm text-gray-500">ปีที่เปิดกิจการ</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-amber-700">50+</div>
+              <div class="text-sm text-gray-500">เมนูในร้าน</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-amber-700">4.9★</div>
+              <div class="text-sm text-gray-500">คะแนนรีวิว</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ── ข้อมูลติดต่อ (sidebar-style) ── -->
+    <div id="contact" class="contact-section max-w-5xl mx-auto px-6 py-16">
+      <div class="flex flex-col md:flex-row gap-8">
+
+        <div class="main-contact flex-1">
+          <h2 class="text-2xl font-bold text-amber-900 mb-6">มาหาเราได้ที่นี่</h2>
+          <div class="bg-white rounded-2xl shadow-sm p-6 space-y-4">
+            <div class="flex items-start gap-4">
+              <div class="text-2xl">📍</div>
+              <div>
+                <div class="font-semibold text-gray-800">ที่อยู่</div>
+                <div class="text-gray-500 text-sm">123 ถนนสุขุมวิท แขวงคลองเตย กรุงเทพฯ 10110</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-2xl">🕐</div>
+              <div>
+                <div class="font-semibold text-gray-800">เวลาเปิด-ปิด</div>
+                <div class="text-gray-500 text-sm">จันทร์ – ศุกร์ 07:00 – 20:00<br>เสาร์ – อาทิตย์ 08:00 – 21:00</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="text-2xl">📞</div>
+              <div>
+                <div class="font-semibold text-gray-800">โทรศัพท์</div>
+                <div class="text-gray-500 text-sm">02-123-4567</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-info w-full md:w-72">
+          <h3 class="text-lg font-bold text-amber-900 mb-4">ข้อมูลเพิ่มเติม</h3>
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 space-y-3">
+            <div class="flex items-center gap-3 text-sm text-gray-600">
+              <span>🅿️</span> มีที่จอดรถ 20 คัน
+            </div>
+            <div class="flex items-center gap-3 text-sm text-gray-600">
+              <span>📶</span> Free WiFi ความเร็วสูง
+            </div>
+            <div class="flex items-center gap-3 text-sm text-gray-600">
+              <span>🐾</span> Pet Friendly (ลานนอก)
+            </div>
+            <div class="flex items-center gap-3 text-sm text-gray-600">
+              <span>💳</span> รับทุกบัตรเครดิต
+            </div>
+            <div class="flex items-center gap-3 text-sm text-gray-600">
+              <span>📱</span> สั่งล่วงหน้าผ่าน LINE OA
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end page-main -->
+
+
+  <!-- ════════════════════════════════════
+       ส่วนล่างสุดของหน้า
+  ════════════════════════════════════ -->
+  <div class="site-footer bg-amber-900 text-white">
+    <div class="max-w-5xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between gap-8">
+
+      <div class="footer-brand">
+        <div class="text-xl font-bold mb-2">☕ Morning Glow Café</div>
+        <p class="text-amber-300 text-sm max-w-xs leading-relaxed">
+          เริ่มต้นวันดีๆ ด้วยกาแฟสักแก้ว ยินดีต้อนรับทุกคนเสมอ
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <div class="font-semibold text-amber-300 mb-3 text-sm uppercase tracking-wide">ลิงก์</div>
+        <div class="flex flex-col gap-2 text-sm text-amber-200">
+          <a href="#menu" class="hover:text-white transition">เมนูของเรา</a>
+          <a href="#about" class="hover:text-white transition">เกี่ยวกับเรา</a>
+          <a href="#contact" class="hover:text-white transition">ติดต่อ</a>
+        </div>
+      </div>
+
+      <div class="footer-social">
+        <div class="font-semibold text-amber-300 mb-3 text-sm uppercase tracking-wide">ติดตามเรา</div>
+        <div class="flex flex-col gap-2 text-sm text-amber-200">
+          <a href="#" class="hover:text-white transition">📘 Facebook</a>
+          <a href="#" class="hover:text-white transition">📸 Instagram</a>
+          <a href="#" class="hover:text-white transition">💬 LINE OA</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="border-t border-amber-800 text-center py-4 text-amber-400 text-sm">
+      © 2567 Morning Glow Café · สงวนลิขสิทธิ์ทุกประการ
+    </div>
+  </div>
+
+</body>
+</html>
