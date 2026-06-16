@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Week 4 — Vue ก้าวแรก + v-bind | 21901-2003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAFA;--surf:#FFFFFF;--card:#FFFFFF;--card2:#FFF7F0;
+  --bd:#FFE4CC;--bd2:#FFC899;
+  --o:#F97316;--o2:#EA580C;--o3:#FB923C;
+  --os:#FFF3E8;--os2:#FFE8D0;
+  --g:#22C55E;--gs:#F0FDF4;
+  --b:#3B82F6;--bs:#EFF6FF;
+  --r:#EF4444;--rs:#FEF2F2;
+  --tx:#1A1A1A;--tx2:#555;--tx3:#999;
+  --sh:0 2px 12px rgba(249,115,22,.1);
+}
+html,body{background:var(--bg);color:var(--tx);font-family:'Sarabun',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden}
+#rprog{position:fixed;top:0;left:0;height:3px;width:0;z-index:1000;background:linear-gradient(90deg,var(--o),var(--o3),#FDE68A)}
+.snav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);padding:0 1.5rem;height:52px;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.snav-item{white-space:nowrap;padding:5px 14px;border-radius:100px;font-size:13px;font-weight:500;color:var(--tx3);cursor:pointer;border:1px solid transparent;transition:all .2s;text-decoration:none}
+.snav-item:hover,.snav-item.active{color:var(--o);border-color:var(--bd2);background:var(--os)}
+.snav-sep{color:var(--bd2);font-size:12px}
+.page{max-width:900px;margin:0 auto;padding:0 1.25rem 5rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:2px solid var(--bd)}
+.wk-tag{display:inline-flex;align-items:center;gap:7px;background:var(--os);border:1px solid var(--bd2);color:var(--o);padding:5px 16px;border-radius:100px;font-size:13px;margin-bottom:1.2rem;font-weight:600}
+.hero h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;line-height:1.15;margin-bottom:.5rem}
+.hero h1 span{background:linear-gradient(135deg,var(--o),var(--o3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--tx2);font-size:14px;max-width:560px;margin-bottom:1.5rem}
+.hchips{display:flex;gap:8px;flex-wrap:wrap}
+.hchip{padding:5px 14px;border-radius:8px;font-size:13px;font-weight:500}
+.sec{padding:3rem 0 1rem}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:.4rem}
+.sec-num{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
+.sec-line{flex:1;height:1px;background:var(--bd)}
+.sec-title{font-size:clamp(1.3rem,3vw,1.8rem);font-weight:700;margin-bottom:.3rem}
+.sec-sub{color:var(--tx2);font-size:13px;margin-bottom:1.8rem}
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:var(--sh)}
+.card-title{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+kbd{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg);border:1px solid var(--bd);border-bottom:2px solid var(--bd2);border-radius:5px;padding:2px 7px;color:var(--tx)}
+.code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:#1E293B;border:1px solid #334155;border-radius:10px;padding:14px 18px;color:#CBD5E1;margin:8px 0;line-height:1.9;overflow-x:auto;white-space:pre}
+.t{color:#7DD3FC}.a{color:#86EFAC}.v{color:#FCA5A5}.cm{color:#475569}.k{color:#C4B5FD}.prop{color:#7DD3FC}.val{color:#86EFAC}.str{color:#FCA5A5}.fn{color:#FDE68A}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:640px){.three{grid-template-columns:1fr}}
+.info{border-radius:10px;padding:11px 15px;font-size:13.5px;margin:8px 0;line-height:1.6;display:flex;align-items:flex-start;gap:10px}
+.ic{flex-shrink:0;font-size:1.1rem;margin-top:1px}
+.info-o{background:var(--os);border:1px solid var(--bd2);color:#7C2D12}
+.info-g{background:var(--gs);border:1px solid #BBF7D0;color:#14532D}
+.info-b{background:var(--bs);border:1px solid #BFDBFE;color:#1E3A8A}
+.info-r{background:var(--rs);border:1px solid #FECACA;color:#7F1D1D}
+.js-callout{background:var(--gs);border:2px solid var(--g);border-radius:12px;padding:14px 16px;margin:12px 0}
+.js-callout-title{font-size:12px;font-weight:700;color:#15803D;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.js-callout-body{font-size:13.5px;color:#14532D;line-height:1.7}
+.jp{font-family:'JetBrains Mono',monospace;font-size:11px;padding:2px 7px;border-radius:4px;background:#DCFCE7;color:#15803D;border:1px solid #BBF7D0}
+.preview-box{background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:16px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.preview-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+.step-list{list-style:none}
+.step-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--bd)}
+.step-item:last-child{border-bottom:none}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--os2);border:1px solid var(--o3);color:var(--o2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body{flex:1}
+.step-title{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px}
+.step-desc{font-size:12px;color:var(--tx2);line-height:1.6}
+.workshop{background:linear-gradient(135deg,var(--os),var(--os2));border:2px solid var(--bd2);border-radius:16px;padding:1.5rem;margin:2rem 0}
+.ws-head{display:flex;align-items:center;gap:12px;margin-bottom:1rem}
+.ws-icon{font-size:1.5rem}
+.ws-title{font-size:1rem;font-weight:700}
+.ws-badge{font-size:11px;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.ws-desc{font-size:13px;color:var(--tx2);margin-bottom:1rem;line-height:1.7}
+.ws-tasks{display:flex;flex-direction:column;gap:7px}
+.ws-task{background:#fff;border-radius:10px;padding:11px 14px;display:flex;align-items:flex-start;gap:11px;border:1px solid var(--bd)}
+.ws-lv{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;margin-top:1px}
+.lv1{background:#DCFCE7;color:#15803D;border:1px solid #86EFAC}
+.lv2{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+.lv3{background:#FDF4FF;color:#7E22CE;border:1px solid #E879F9}
+.ws-text{font-size:13px;line-height:1.6;color:var(--tx2)}
+.ws-text strong{color:var(--tx)}
+hr.sec-hr{border:none;border-top:2px solid var(--bd);margin:3rem 0 0}
+.badge-new{background:var(--os2);color:var(--o2);border:1px solid var(--o3);padding:2px 9px;border-radius:5px;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:600}
+
+/* interactive demo */
+.demo-box{background:var(--os);border:2px solid var(--bd2);border-radius:14px;padding:1.2rem;margin:12px 0}
+.demo-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.demo-inp{padding:8px 12px;border:1px solid var(--bd);border-radius:8px;font-family:'Sarabun',sans-serif;font-size:14px;background:#fff;color:var(--tx);outline:none;transition:border-color .2s}
+.demo-inp:focus{border-color:var(--o3)}
+.demo-inp-label{font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:4px}
+.demo-output{background:#fff;border-radius:10px;padding:14px;border:1px solid var(--bd);min-height:52px;font-size:14px;display:flex;align-items:center;gap:10px}
+
+/* vue file anatomy */
+.vue-block{border-radius:8px;padding:10px 14px;margin-bottom:6px}
+.vb-template{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3)}
+.vb-script{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3)}
+.vb-style{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.3)}
+.vb-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.vb-desc{font-size:12px;color:var(--tx2);line-height:1.5}
+
+/* bind demo */
+.bind-demo{background:#fff;border-radius:10px;padding:16px;border:1px solid var(--bd)}
+.color-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.color-btn{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;border:2px solid transparent;cursor:pointer;transition:all .2s;font-family:'Sarabun',sans-serif}
+.color-btn.active{border-color:#1a1a1a;transform:scale(1.05)}
+.bind-preview{padding:20px;border-radius:8px;text-align:center;transition:all .3s;font-size:16px;font-weight:600}
+</style>
+</head>
+<body>
+<div id="rprog"></div>
+<nav class="snav">
+  <a class="snav-item" href="#s1">🤔 ทำไมต้อง Vue</a>
+  <span class="snav-sep">›</span>
+  <a class="snav-item" href="#s2">📁 โครงสร้าง .vue</a>
+  <span class="snav-sep">›</span>
+  <a class="snav-item" href="#s3">📦 ref() + {{ }}</a>
+  <span class="snav-sep">›</span>
+  <a class="snav-item" href="#s4">🔗 v-bind</a>
+  <span class="snav-sep">›</span>
+  <a class="snav-item" href="#s5">🛠 Workshop</a>
+</nav>
+
+<div class="page">
+<div class="hero">
+  <div class="wk-tag">🟢 WEEK 04</div>
+  <h1>Vue ก้าวแรก +<br><span>v-bind</span></h1>
+  <p>เริ่มต้นจาก HTML ที่รู้จักแล้ว → เปลี่ยนให้ข้อมูลขยับได้ด้วย Vue 3 Composition API</p>
+  <div class="hchips">
+    <span class="hchip" style="background:var(--os);color:var(--o2);border:1px solid var(--bd2)">🟢 Vue 3 + Vite</span>
+    <span class="hchip" style="background:var(--gs);color:#15803D;border:1px solid #BBF7D0">⚡ JS: let/const, ref()</span>
+    <span class="hchip" style="background:var(--bs);color:var(--b);border:1px solid #BFDBFE">🔗 v-bind dynamic</span>
+    <span class="hchip" style="background:#FEF3C7;color:#92400E;border:1px solid #FCD34D">🎯 ชิ้นงาน: Profile Card</span>
+  </div>
+</div>
+
+<!-- S1: ทำไมต้อง Vue -->
+<div class="sec" id="s1">
+  <div class="sec-head"><span class="sec-num" style="color:var(--o)">01</span><div class="sec-line"></div></div>
+  <h2 class="sec-title" style="color:var(--o2)">ทำไมต้องมี Vue?</h2>
+  <p class="sec-sub">HTML ปกติทำอะไรไม่ได้บ้าง</p>
+
+  <div class="card">
+    <div class="card-title">🤔 ปัญหาของ HTML ล้วนๆ</div>
+    <div class="two">
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">❌ HTML ล้วนๆ — ข้อมูลแข็ง</div>
+        <div class="code"><span class="cm">&lt;!-- เปลี่ยนชื่อต้องแก้ไฟล์ --&gt;</span>
+<span class="t">&lt;h1&gt;</span>สวัสดี สมชาย<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;p&gt;</span>อายุ 20 ปี<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span>แผนก IT<span class="t">&lt;/p&gt;</span></div>
+        <div class="info info-r" style="margin-top:6px"><span class="ic">❌</span><span>ข้อมูลฝังอยู่ใน HTML ต้องแก้ทีละจุด ถ้ามี 100 หน้าต้องแก้ 100 ครั้ง</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#15803D;margin-bottom:6px">✅ Vue — ข้อมูลอยู่ที่เดียว</div>
+        <div class="code"><span class="cm">&lt;!-- เปลี่ยนแค่ที่ ref() ที่เดียว --&gt;</span>
+<span class="k">const</span> <span class="fn">name</span> = <span class="fn">ref</span>(<span class="str">'สมชาย'</span>)
+<span class="k">const</span> <span class="fn">age</span>  = <span class="fn">ref</span>(<span class="str">20</span>)
+
+<span class="t">&lt;h1&gt;</span>สวัสดี {{ name }}<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;p&gt;</span>อายุ {{ age }} ปี<span class="t">&lt;/p&gt;</span></div>
+        <div class="info info-g" style="margin-top:6px"><span class="ic">✅</span><span>ข้อมูลอยู่ที่เดียว แสดงได้หลายจุด แก้ครั้งเดียว อัปเดตทุกที่</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 Vue เชื่อม Data กับ UI อัตโนมัติ — ลองพิมพ์</div>
+    <div class="demo-box">
+      <div style="margin-bottom:10px">
+        <div class="demo-inp-label">ชื่อ (ref)</div>
+        <input class="demo-inp" id="d-name" value="สมชาย" oninput="updateDemo()" style="width:200px">
+      </div>
+      <div class="preview-label">หน้าเว็บที่แสดงผล</div>
+      <div class="demo-output">
+        <div style="font-size:15px;font-weight:600;color:var(--tx)">สวัสดี <span id="d-out" style="color:var(--o2)">สมชาย</span>!</div>
+      </div>
+      <div style="font-size:12px;color:var(--tx3);margin-top:8px">Vue อัปเดตทันทีที่ข้อมูลเปลี่ยน — ไม่ต้อง refresh</div>
+    </div>
+    <div class="info info-o"><span class="ic">💡</span><span>นี่คือ <strong>Reactivity</strong> — Vue คอยดูการเปลี่ยนแปลงของ data แล้วอัปเดต UI ให้เองอัตโนมัติ</span></div>
+  </div>
+</div>
+
+<hr class="sec-hr">
+
+<!-- S2: โครงสร้าง .vue -->
+<div class="sec" id="s2">
+  <div class="sec-head"><span class="sec-num" style="color:var(--b)">02</span><div class="sec-line"></div></div>
+  <h2 class="sec-title" style="color:var(--b)">ไฟล์ .vue คืออะไร?</h2>
+  <p class="sec-sub">3 ส่วนในไฟล์เดียว — template, script, style</p>
+
+  <div class="card">
+    <div class="card-title">📁 Single File Component (SFC)</div>
+    <div class="two">
+      <div>
+        <div class="vue-block vb-template">
+          <div class="vb-label" style="color:#15803D">🟩 &lt;template&gt;</div>
+          <div class="vb-desc">HTML ที่แสดงบนหน้าจอ — ใส่ {{ }} และ v-* directive ได้</div>
+        </div>
+        <div class="vue-block vb-script">
+          <div class="vb-label" style="color:var(--b)">🟦 &lt;script setup&gt;</div>
+          <div class="vb-desc">Logic ทั้งหมด — ประกาศ ref(), function, computed ที่นี่</div>
+        </div>
+        <div class="vue-block vb-style">
+          <div class="vb-label" style="color:#BE185D">🟪 &lt;style scoped&gt;</div>
+          <div class="vb-desc">CSS เฉพาะ component นี้ — ไม่กระทบ component อื่น</div>
+        </div>
+      </div>
+      <div>
+        <div class="code"><span class="t">&lt;template&gt;</span>
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"card"</span><span class="t">&gt;</span>
+    <span class="t">&lt;h1&gt;</span>{{ name }}<span class="t">&lt;/h1&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/template&gt;</span>
+
+<span class="t">&lt;script</span> <span class="a">setup</span><span class="t">&gt;</span>
+<span class="k">import</span> { <span class="fn">ref</span> } <span class="k">from</span> <span class="str">'vue'</span>
+
+<span class="k">const</span> <span class="fn">name</span> = <span class="fn">ref</span>(<span class="str">'สมชาย'</span>)
+<span class="t">&lt;/script&gt;</span>
+
+<span class="t">&lt;style</span> <span class="a">scoped</span><span class="t">&gt;</span>
+<span class="prop">.card</span> { <span class="a">padding</span>: <span class="v">20px</span>; }
+<span class="t">&lt;/style&gt;</span></div>
+      </div>
+    </div>
+    <div class="info info-b" style="margin-top:4px"><span class="ic">💡</span><span><code style="color:var(--b);background:var(--bs);padding:1px 5px;border-radius:3px">script setup</code> คือรูปแบบใหม่ของ Vue 3 — เขียนสั้นกว่า Options API และ Vue 2 มาก</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚀 ตั้งต้นโปรเจ็กต์ใน Terminal</div>
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">สร้างโปรเจ็กต์ด้วย Vite</div>
+          <div class="code">npm create vite@latest my-profile <span class="cm">-- --template vue</span>
+cd my-profile
+npm install</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">ลบ template เริ่มต้นที่ไม่ต้องการ</div>
+          <div class="step-desc">เปิด <kbd>src/App.vue</kbd> → ลบทุกอย่างออก แล้วเริ่มเขียนใหม่</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">รันดูผล</div>
+          <div class="code">npm run dev</div>
+          <div class="step-desc">เปิด <code>http://localhost:5173</code> → เห็นหน้าเว็บ = สำเร็จ</div>
+        </div>
+      </li>
+    </ul>
+    <div class="info info-o" style="margin-top:4px"><span class="ic">⚡</span><span>ต่างจาก Week 1 ตรงที่ตอนนี้มี <strong>Tailwind ผ่าน npm</strong> ไม่ใช่ CDN แล้ว — ต้องติดตั้งก่อน</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ ติดตั้ง Tailwind ใน Vite Project</div>
+    <div class="code">npm install -D tailwindcss @tailwindcss/vite</div>
+    <div style="font-size:13px;color:var(--tx2);margin:8px 0">เพิ่มใน <kbd>vite.config.js</kbd></div>
+    <div class="code"><span class="k">import</span> tailwindcss <span class="k">from</span> <span class="str">'@tailwindcss/vite'</span>
+<span class="k">export default</span> {
+  plugins: [vue(), tailwindcss()]
+}</div>
+    <div style="font-size:13px;color:var(--tx2);margin:8px 0">เพิ่มใน <kbd>src/style.css</kbd></div>
+    <div class="code">@import <span class="str">"tailwindcss"</span>;</div>
+  </div>
+</div>
+
+<hr class="sec-hr">
+
+<!-- S3: ref() + {{ }} -->
+<div class="sec" id="s3">
+  <div class="sec-head"><span class="sec-num" style="color:var(--g)">03</span><div class="sec-line"></div></div>
+  <h2 class="sec-title" style="color:#15803D">ref() + {{ }} — Variable ของ Vue</h2>
+  <p class="sec-sub">นี่คือ JS concept แรกที่จะเจอ — Variable ที่ Vue มองเห็น</p>
+
+  <div class="js-callout">
+    <div class="js-callout-title">⚡ JS Concept — Variable คืออะไร</div>
+    <div class="js-callout-body">
+      Variable = กล่องเก็บข้อมูล · ตั้งชื่อกล่องได้ · เรียกใช้ได้ทีหลัง<br><br>
+      <div class="code" style="font-size:12px;margin:6px 0"><span class="cm">// JS ปกติ — let/const</span>
+<span class="k">let</span> <span class="fn">name</span> = <span class="str">'สมชาย'</span>    <span class="cm">// เปลี่ยนได้ทีหลัง</span>
+<span class="k">const</span> <span class="fn">school</span> = <span class="str">'วท.เลย'</span>  <span class="cm">// เปลี่ยนไม่ได้แล้ว</span></div>
+      ใน Vue จะใช้ <span class="jp">ref()</span> แทน เพราะ Vue ต้องการ "มองเห็น" การเปลี่ยนแปลง<br>
+      <div class="code" style="font-size:12px;margin:6px 0"><span class="k">import</span> { <span class="fn">ref</span> } <span class="k">from</span> <span class="str">'vue'</span>
+<span class="k">const</span> <span class="fn">name</span> = <span class="fn">ref</span>(<span class="str">'สมชาย'</span>)  <span class="cm">// Vue มองเห็น ✓</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📦 ref() — ประกาศ + ใช้งาน</div>
+    <div class="two">
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">ใน &lt;script setup&gt;</div>
+        <div class="code"><span class="k">import</span> { <span class="fn">ref</span> } <span class="k">from</span> <span class="str">'vue'</span>
+
+<span class="cm">// ประกาศ ref</span>
+<span class="k">const</span> <span class="fn">name</span>   = <span class="fn">ref</span>(<span class="str">'สมชาย'</span>)
+<span class="k">const</span> <span class="fn">age</span>    = <span class="fn">ref</span>(<span class="v">20</span>)
+<span class="k">const</span> <span class="fn">dept</span>   = <span class="fn">ref</span>(<span class="str">'IT'</span>)
+<span class="k">const</span> <span class="fn">active</span> = <span class="fn">ref</span>(<span class="v">true</span>)
+<span class="cm">  //          ↑ string, number, boolean ได้หมด</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">ใน &lt;template&gt;</div>
+        <div class="code"><span class="cm">&lt;!-- ใช้ {{ }} เพื่ออ่านค่า --&gt;</span>
+<span class="t">&lt;h1&gt;</span>{{ name }}<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;p&gt;</span>อายุ {{ age }} ปี<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span>แผนก {{ dept }}<span class="t">&lt;/p&gt;</span>
+
+<span class="cm">&lt;!-- คำนวณใน {{ }} ได้เลย --&gt;</span>
+<span class="t">&lt;p&gt;</span>ปีเกิด {{ 2568 - age }}<span class="t">&lt;/p&gt;</span></div>
+      </div>
+    </div>
+    <div class="info info-o" style="margin-top:6px"><span class="ic">⚠️</span><span>ใน <strong>script</strong> ต้องเขียน <code>.value</code> เช่น <code>name.value = 'ใหม่'</code> แต่ใน <strong>template</strong> ไม่ต้อง Vue จัดการให้</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎮 ลองเปลี่ยนค่า ref ดูผลทันที <span class="badge-new">Interactive</span></div>
+    <div class="demo-box">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <div>
+          <div class="demo-inp-label">name</div>
+          <input class="demo-inp" id="r-name" value="สมชาย" oninput="renderRef()" style="width:140px">
+        </div>
+        <div>
+          <div class="demo-inp-label">age</div>
+          <input class="demo-inp" id="r-age" value="20" type="number" oninput="renderRef()" style="width:80px">
+        </div>
+        <div>
+          <div class="demo-inp-label">dept</div>
+          <input class="demo-inp" id="r-dept" value="IT" oninput="renderRef()" style="width:100px">
+        </div>
+      </div>
+      <div class="preview-label">ผลลัพธ์ใน Template</div>
+      <div class="preview-box">
+        <div style="font-family:sans-serif">
+          <h2 id="ro-name" style="font-size:18px;font-weight:700;color:#1A202C;margin-bottom:4px">สมชาย</h2>
+          <p id="ro-age" style="color:#555;font-size:14px">อายุ 20 ปี (ปีเกิด <span id="ro-born">2548</span>)</p>
+          <p id="ro-dept" style="color:#555;font-size:14px">แผนก IT</p>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--tx3);margin-top:8px">Vue คำนวณ <code>2568 - age</code> ใน template ได้เลย</div>
+    </div>
+  </div>
+</div>
+
+<hr class="sec-hr">
+
+<!-- S4: v-bind -->
+<div class="sec" id="s4">
+  <div class="sec-head"><span class="sec-num" style="color:var(--o)">04</span><div class="sec-line"></div></div>
+  <h2 class="sec-title" style="color:var(--o2)">v-bind — เชื่อม ref กับ Attribute</h2>
+  <p class="sec-sub">{{ }} ใช้กับข้อความ · v-bind ใช้กับ attribute ของ HTML tag</p>
+
+  <div class="card">
+    <div class="card-title">🔗 v-bind คืออะไร?</div>
+    <div class="two">
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">❌ HTML ปกติ — class แข็ง</div>
+        <div class="code"><span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"bg-blue-500"</span><span class="t">&gt;</span>
+  class เป็น blue-500 ตลอด
+<span class="t">&lt;/div&gt;</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#15803D;margin-bottom:6px">✅ v-bind — class จาก ref</div>
+        <div class="code"><span class="t">&lt;div</span> <span class="a">:class</span>=<span class="v">"bgColor"</span><span class="t">&gt;</span>
+  class เปลี่ยนตาม ref
+<span class="t">&lt;/div&gt;</span>
+
+<span class="cm">// script setup</span>
+<span class="k">const</span> bgColor = <span class="fn">ref</span>(<span class="str">'bg-blue-500'</span>)</div>
+      </div>
+    </div>
+    <div class="info info-o" style="margin-top:6px"><span class="ic">💡</span><span><code>:class</code> คือ shorthand ของ <code>v-bind:class</code> — ใช้ <strong>:</strong> นำหน้า attribute ที่ต้องการ bind</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎨 v-bind attribute ที่ใช้บ่อย</div>
+    <div class="code"><span class="cm">&lt;!-- :class — bind Tailwind class --&gt;</span>
+<span class="t">&lt;div</span> <span class="a">:class</span>=<span class="v">"cardColor"</span><span class="t">&gt;</span>...<span class="t">&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- :src — bind รูปภาพ --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">:src</span>=<span class="v">"profileImg"</span> <span class="a">:alt</span>=<span class="v">"name"</span><span class="t">&gt;</span>
+
+<span class="cm">&lt;!-- :href — bind ลิงก์ --&gt;</span>
+<span class="t">&lt;a</span> <span class="a">:href</span>=<span class="v">"profileUrl"</span><span class="t">&gt;</span>ดูโปรไฟล์<span class="t">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- :style — bind CSS inline --&gt;</span>
+<span class="t">&lt;div</span> <span class="a">:style</span>=<span class="v">"{ background: brandColor }"</span><span class="t">&gt;</span>...<span class="t">&lt;/div&gt;</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎮 ลองเปลี่ยนสี v-bind <span class="badge-new">Interactive</span></div>
+    <div class="demo-box">
+      <div class="bind-demo">
+        <div class="preview-label">เลือกธีมสี</div>
+        <div class="color-btns">
+          <button class="color-btn active" style="background:#3B82F6;color:white" onclick="setTheme('blue','bg-blue-500 text-white','สีฟ้า',this)">ฟ้า</button>
+          <button class="color-btn" style="background:#F97316;color:white" onclick="setTheme('orange','bg-orange-500 text-white','สีส้ม',this)">ส้ม</button>
+          <button class="color-btn" style="background:#22C55E;color:white" onclick="setTheme('green','bg-green-500 text-white','สีเขียว',this)">เขียว</button>
+          <button class="color-btn" style="background:#A855F7;color:white" onclick="setTheme('purple','bg-purple-500 text-white','สีม่วง',this)">ม่วง</button>
+          <button class="color-btn" style="background:#EF4444;color:white" onclick="setTheme('red','bg-red-500 text-white','สีแดง',this)">แดง</button>
+        </div>
+        <div class="bind-preview" id="bind-preview" style="background:#3B82F6;color:white">
+          🎨 ธีม: <span id="bind-theme-name">สีฟ้า</span>
+        </div>
+        <div style="margin-top:10px">
+          <div class="preview-label">Tailwind class ที่ bind</div>
+          <div class="code" style="font-size:12px;margin:4px 0"><span class="t">&lt;div</span> <span class="a">:class</span>=<span class="v">"'<span id="bind-class-out">bg-blue-500 text-white</span>'"</span><span class="t">&gt;</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="js-callout">
+    <div class="js-callout-title">⚡ JS Concept — Template Literal</div>
+    <div class="js-callout-body">
+      ต้องการ class หลายอัน หรือเชื่อมข้อความกับ variable ใช้ template literal<br>
+      <div class="code" style="font-size:12px;margin:6px 0"><span class="k">const</span> <span class="fn">color</span> = <span class="fn">ref</span>(<span class="str">'blue'</span>)
+
+<span class="cm">// Template Literal — ใช้ backtick ` และ ${}</span>
+<span class="k">const</span> <span class="fn">bgClass</span> = <span class="fn">ref</span>(<span class="str">`bg-${color.value}-500`</span>)
+<span class="cm">//                      ↑ แทรก variable เข้าไปได้เลย</span></div>
+    </div>
+  </div>
+</div>
+
+<hr class="sec-hr">
+
+<!-- S5: Workshop -->
+<div class="sec" id="s5">
+  <div class="sec-head"><span class="sec-num" style="color:var(--o)">05</span><div class="sec-line"></div></div>
+  <h2 class="sec-title" style="color:var(--o2)">Workshop</h2>
+  <p class="sec-sub">ฝึกทำในห้องก่อนส่งชิ้นงาน</p>
+
+  <div class="workshop">
+    <div class="ws-head">
+      <div class="ws-icon">🛠</div>
+      <div>
+        <div class="ws-title">Workshop — Vue Profile + v-bind</div>
+        <span class="ws-badge" style="background:var(--os2);color:var(--o2);border:1px solid var(--o3)">ref() + v-bind</span>
+      </div>
+    </div>
+    <p class="ws-desc">สร้างไฟล์ <strong>App.vue</strong> — หน้าแนะนำตัวที่ใช้ ref() แสดงข้อมูล และ v-bind เชื่อมกับ Tailwind class</p>
+    <div class="ws-tasks">
+      <div class="ws-task">
+        <div class="ws-lv lv1">1</div>
+        <div class="ws-text"><strong>พื้นฐาน:</strong> ประกาศ ref() อย่างน้อย 3 ตัว (ชื่อ, อายุ, แผนก) แล้วแสดงใน template ด้วย <code style="color:#15803D;background:#DCFCE7;padding:1px 5px;border-radius:3px">{{ }}</code></div>
+      </div>
+      <div class="ws-task">
+        <div class="ws-lv lv2">2</div>
+        <div class="ws-text"><strong>กลาง:</strong> ใช้ <code style="color:#15803D;background:#DCFCE7;padding:1px 5px;border-radius:3px">:class</code> bind Tailwind class จาก ref() — เช่น สีพื้นหลัง card มาจาก <code>ref('bg-orange-100')</code></div>
+      </div>
+      <div class="ws-task">
+        <div class="ws-lv lv3">3</div>
+        <div class="ws-text"><strong>ท้าทาย:</strong> เพิ่ม <code style="color:#15803D;background:#DCFCE7;padding:1px 5px;border-radius:3px">:src</code> รูปภาพจาก URL และ <code>:href</code> ลิงก์ GitHub จาก ref() — ทำ dynamic profile card สมบูรณ์</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- summary -->
+  <div style="background:linear-gradient(135deg,var(--os),#FFFBEB);border:2px solid var(--bd2);border-radius:16px;padding:1.5rem">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:12px;font-family:'JetBrains Mono',monospace">สรุป Week 4</div>
+    <div class="three">
+      <div style="background:#fff;border:1px solid var(--bd);border-radius:10px;padding:12px;box-shadow:var(--sh)">
+        <div style="color:var(--o2);font-weight:600;font-size:13px;margin-bottom:4px">✓ Vue Basics</div>
+        <div style="font-size:12px;color:var(--tx2)">.vue file · script setup · template</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--bd);border-radius:10px;padding:12px;box-shadow:var(--sh)">
+        <div style="color:#15803D;font-weight:600;font-size:13px;margin-bottom:4px">✓ JS: Variable</div>
+        <div style="font-size:12px;color:var(--tx2)">let/const · ref() · string · number · template literal</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--bd);border-radius:10px;padding:12px;box-shadow:var(--sh)">
+        <div style="color:var(--b);font-weight:600;font-size:13px;margin-bottom:4px">✓ v-bind</div>
+        <div style="font-size:12px;color:var(--tx2)">:class · :src · :href · :style</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bd);font-size:13px;color:var(--tx2)">
+      <strong style="color:var(--o2)">Week 5 →</strong> v-if + v-for — เงื่อนไขและ loop · JS: boolean, array
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('rprog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){document.querySelectorAll('.snav-item').forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.snav-item[href="#${x.target.id}"]`);if(l)l.classList.add('active')}})},{threshold:.3});
+document.querySelectorAll('.sec').forEach(s=>obs.observe(s));
+
+function updateDemo(){document.getElementById('d-out').textContent=document.getElementById('d-name').value||'...';}
+function renderRef(){
+  const n=document.getElementById('r-name').value||'...';
+  const a=parseInt(document.getElementById('r-age').value)||0;
+  const d=document.getElementById('r-dept').value||'...';
+  document.getElementById('ro-name').textContent=n;
+  document.getElementById('ro-age').innerHTML=`อายุ ${a} ปี (ปีเกิด <span id="ro-born">${2568-a}</span>)`;
+  document.getElementById('ro-dept').textContent='แผนก '+d;
+}
+
+const colors={'blue':'#3B82F6','orange':'#F97316','green':'#22C55E','purple':'#A855F7','red':'#EF4444'};
+function setTheme(key,cls,label,btn){
+  document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const el=document.getElementById('bind-preview');
+  el.style.background=colors[key];el.style.color='white';
+  document.getElementById('bind-theme-name').textContent=label;
+  document.getElementById('bind-class-out').textContent=cls;
+}
+</script>
+</body>
+</html>

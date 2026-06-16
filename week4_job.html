@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Week 4 — ชิ้นงาน: Profile Card ด้วย Vue</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--o:#F97316;--o2:#EA580C;--o3:#FB923C;--os:#FFF3E8;--os2:#FFE8D0;--bd:#FFE4CC;--bd2:#FFC899;--g:#22C55E;--gs:#F0FDF4;--b:#3B82F6;--bs:#EFF6FF;--tx:#1A1A1A;--tx2:#555;--tx3:#999;--sh:0 2px 12px rgba(249,115,22,.1)}
+body{background:#FAFAFA;color:var(--tx);font-family:'Sarabun',sans-serif;font-size:15px;line-height:1.7;padding:28px 16px 60px}
+.page{max-width:860px;margin:0 auto}
+h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.meta{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:600;padding:3px 11px;border-radius:20px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:20px 22px;margin-bottom:18px;box-shadow:var(--sh)}
+.card-title{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sec-title{font-size:17px;font-weight:700;margin:28px 0 12px;color:var(--o2)}
+code{font-family:'JetBrains Mono',monospace;font-size:11px;background:#F1F5F9;padding:1px 5px;border-radius:3px;color:#475569}
+.code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:#1E293B;border-radius:10px;padding:14px 18px;color:#CBD5E1;margin:8px 0;line-height:1.9;overflow-x:auto;white-space:pre}
+.t{color:#7DD3FC}.a{color:#86EFAC}.v{color:#FCA5A5}.cm{color:#475569}.k{color:#C4B5FD}.fn{color:#FDE68A}.str{color:#FCA5A5}
+.info{border-radius:10px;padding:11px 15px;font-size:13px;margin:8px 0;line-height:1.6;display:flex;gap:10px}
+.info-o{background:var(--os);border:1px solid var(--bd2);color:#7C2D12}
+.info-g{background:var(--gs);border:1px solid #BBF7D0;color:#14532D}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:680px){.levels{grid-template-columns:1fr}}
+.lv-card{border-radius:14px;overflow:hidden;border:1px solid var(--bd)}
+.lv-hdr{padding:13px 16px}
+.lv-num{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.lv-title{font-size:14px;font-weight:700;color:#1A1A1A}
+.lv-body{background:#fff;padding:14px 16px}
+.lv-desc{font-size:13px;color:var(--tx2);margin-bottom:10px;line-height:1.6}
+.req-list{list-style:none}
+.req-item{font-size:12px;color:var(--tx2);padding:4px 0;border-bottom:1px solid #F1F5F9;display:flex;gap:7px}
+.req-item:last-child{border-bottom:none}
+.req-item::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.rb1::before{background:var(--g)}.rb2::before{background:var(--o)}.rb3::before{background:#A855F7}
+.preview-wrap{border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.preview-hdr{background:#F1F5F9;padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace}
+.tab-btns{display:flex;gap:6px}
+.tab-btn{font-size:11px;padding:3px 11px;border-radius:20px;cursor:pointer;border:1px solid var(--bd);background:transparent;color:var(--tx3);font-family:'Sarabun',sans-serif;transition:all .15s}
+.tab-btn.a1{border-color:var(--g);color:var(--g);background:var(--gs)}
+.tab-btn.a2{border-color:var(--o);color:var(--o);background:var(--os)}
+.tab-btn.a3{border-color:#A855F7;color:#A855F7;background:#F3E8FF}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:580px){.tip-grid{grid-template-columns:1fr}}
+.tip-card{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:13px}
+.tip-title{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.tip-body{font-size:12px;color:var(--tx2);line-height:1.7}
+.rubric-table{width:100%;border-collapse:collapse}
+.rubric-table th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);padding:8px 12px;border-bottom:2px solid var(--bd)}
+.rubric-table td{padding:9px 12px;border-bottom:1px solid #F1F5F9;font-size:13px}
+.rubric-table tr:last-child td{border-bottom:none}
+.rubric-table tr:hover td{background:var(--os)}
+.pts{font-weight:700;color:var(--o2)}
+.copy-btn{font-size:11px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);background:var(--os);color:var(--o2);cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .15s}
+.copy-btn:hover{background:var(--o);color:white;border-color:var(--o)}
+kbd{font-family:'JetBrains Mono',monospace;font-size:11px;background:#F1F5F9;border:1px solid #E2E8F0;border-bottom:2px solid #CBD5E1;border-radius:4px;padding:2px 6px;color:#475569}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div style="margin-bottom:8px">
+  <span class="badge" style="background:var(--os);color:var(--o2);border:1px solid var(--bd2)">Week 4</span>
+  <span class="badge" style="background:var(--gs);color:#15803D;border:1px solid #BBF7D0">Vue 3 + Vite</span>
+  <span class="badge" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE">⏱ 1–1.5 ชั่วโมง</span>
+  <span class="badge" style="background:#F3E8FF;color:#6B21A8;border:1px solid #DDD6FE">👤 เดี่ยว</span>
+</div>
+
+<h1>ชิ้นงาน: Profile Card ด้วย Vue</h1>
+<p style="font-size:13px;color:var(--tx2);margin-bottom:22px">สร้างหน้าแนะนำตัวที่ใช้ <strong>ref()</strong> เก็บข้อมูล และ <strong>v-bind</strong> เชื่อมกับ Tailwind — ทำในโปรเจ็กต์ Vite+Vue จริง</p>
+
+<!-- โจทย์ -->
+<div class="card">
+  <div class="card-title">📋 โจทย์</div>
+  <p style="font-size:14px;color:var(--tx2);line-height:1.8;margin-bottom:10px">สร้าง <strong>Profile Card</strong> ในไฟล์ <kbd>App.vue</kbd> ที่ข้อมูลทั้งหมดมาจาก <code>ref()</code> — ไม่ hardcode ลงใน template โดยตรง</p>
+  <div class="info info-o"><span>⚠️</span><span>ข้อมูลทุกอย่างต้องอยู่ใน <code>ref()</code> ใน script เท่านั้น — <strong>ห้ามพิมพ์ชื่อหรือข้อมูลตรงๆ ใน template</strong></span></div>
+</div>
+
+<!-- 3 ระดับ -->
+<div class="sec-title">⭐ เลือกระดับ</div>
+<div class="levels">
+  <div class="lv-card">
+    <div class="lv-hdr" style="background:var(--gs)">
+      <div class="lv-num" style="color:var(--g)">ระดับ 1 · พื้นฐาน</div>
+      <div class="lv-title">Profile ง่ายๆ</div>
+    </div>
+    <div class="lv-body">
+      <div class="lv-desc">แสดงข้อมูลจาก ref() ในหน้าแนะนำตัว</div>
+      <ul class="req-list">
+        <li class="req-item rb1">ref() อย่างน้อย 4 ตัว (ชื่อ, อายุ, แผนก, งานอดิเรก)</li>
+        <li class="req-item rb1">แสดงด้วย {{ }} ครบทุก ref</li>
+        <li class="req-item rb1">จัด layout ด้วย Tailwind</li>
+        <li class="req-item rb1">มีสีพื้นหลัง card สวยงาม</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lv-card">
+    <div class="lv-hdr" style="background:var(--os)">
+      <div class="lv-num" style="color:var(--o2)">ระดับ 2 · กลาง</div>
+      <div class="lv-title">Dynamic Card</div>
+    </div>
+    <div class="lv-body">
+      <div class="lv-desc">ทุกอย่างของระดับ 1 + เพิ่ม v-bind</div>
+      <ul class="req-list">
+        <li class="req-item rb2">:class bind สี theme จาก ref()</li>
+        <li class="req-item rb2">:src bind รูปภาพจาก URL ref()</li>
+        <li class="req-item rb2">:href bind ลิงก์ GitHub ref()</li>
+        <li class="req-item rb2">ใช้ template literal ใน ref อย่างน้อย 1 จุด</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lv-card">
+    <div class="lv-hdr" style="background:#F3E8FF">
+      <div class="lv-num" style="color:#6B21A8">ระดับ 3 · ท้าทาย</div>
+      <div class="lv-title">Team Profile</div>
+    </div>
+    <div class="lv-body">
+      <div class="lv-desc">ทุกอย่างของระดับ 2 + หลาย card</div>
+      <ul class="req-list">
+        <li class="req-item rb3">สร้าง object ref() แทน ref() แยกๆ</li>
+        <li class="req-item rb3">ทำ 3 profile card ด้วยข้อมูลคนละชุด</li>
+        <li class="req-item rb3">แต่ละ card มีธีมสีต่างกันจาก ref()</li>
+        <li class="req-item rb3">คำนวณ ปีเกิด (2568 - age) ใน {{ }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW -->
+<div class="sec-title">👁 Preview ตัวอย่าง</div>
+<div class="preview-wrap">
+  <div class="preview-hdr">
+    ตัวอย่าง Profile Card
+    <div class="tab-btns">
+      <button class="tab-btn a1" onclick="showLv(1,this)">ระดับ 1</button>
+      <button class="tab-btn" onclick="showLv(2,this)">ระดับ 2</button>
+      <button class="tab-btn" onclick="showLv(3,this)">ระดับ 3</button>
+    </div>
+  </div>
+  <iframe id="pframe" srcdoc="" style="width:100%;height:360px;border:none;background:#f9fafb"></iframe>
+</div>
+
+<!-- STARTER CODE -->
+<div class="sec-title">🚀 Starter Code</div>
+<div class="card">
+  <div class="info info-g" style="margin-bottom:12px"><span>💡</span><span>เปิด <kbd>src/App.vue</kbd> → ลบทุกอย่างออก → วางโค้ดนี้ → เริ่มเพิ่ม ref() เอง</span></div>
+  <div style="position:relative">
+    <button class="copy-btn" style="position:absolute;top:10px;right:10px;z-index:10" onclick="copyCode()">📋 Copy</button>
+    <div class="code" id="starter"><span class="t">&lt;template&gt;</span>
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"min-h-screen bg-gray-100 flex items-center justify-center p-8"</span><span class="t">&gt;</span>
+
+    <span class="cm">&lt;!-- TODO: สร้าง Profile Card ที่นี่ --&gt;</span>
+    <span class="cm">&lt;!-- ข้อมูลทั้งหมดต้องมาจาก ref() --&gt;</span>
+
+    <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"bg-white rounded-2xl shadow-lg p-8 w-72 text-center"</span><span class="t">&gt;</span>
+      <span class="t">&lt;h1</span> <span class="a">class</span>=<span class="v">"text-2xl font-bold text-gray-800"</span><span class="t">&gt;</span>{{ name }}<span class="t">&lt;/h1&gt;</span>
+      <span class="t">&lt;p</span> <span class="a">class</span>=<span class="v">"text-gray-500 mt-2"</span><span class="t">&gt;</span>อายุ {{ age }} ปี<span class="t">&lt;/p&gt;</span>
+    <span class="t">&lt;/div&gt;</span>
+
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/template&gt;</span>
+
+<span class="t">&lt;script</span> <span class="a">setup</span><span class="t">&gt;</span>
+<span class="k">import</span> { <span class="fn">ref</span> } <span class="k">from</span> <span class="str">'vue'</span>
+
+<span class="cm">// TODO: เพิ่ม ref() ตรงนี้</span>
+<span class="k">const</span> <span class="fn">name</span> = <span class="fn">ref</span>(<span class="str">'ชื่อของคุณ'</span>)
+<span class="k">const</span> <span class="fn">age</span>  = <span class="fn">ref</span>(<span class="v">20</span>)
+<span class="t">&lt;/script&gt;</span></div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="sec-title">💡 Class ที่อาจมีประโยชน์</div>
+<div class="tip-grid">
+  <div class="tip-card">
+    <div class="tip-title">🃏 Profile Card</div>
+    <div class="tip-body">
+      <code>bg-white rounded-2xl shadow-lg p-8</code><br>
+      <code>w-72</code> หรือ <code>max-w-sm</code><br>
+      <code>text-center</code><br>
+      <code>overflow-hidden</code>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-title">🖼 รูปภาพวงกลม</div>
+    <div class="tip-body">
+      <code>w-24 h-24 rounded-full</code><br>
+      <code>object-cover</code><br>
+      <code>mx-auto mb-4</code><br>
+      <code>border-4 border-orange-300</code>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-title">🔗 v-bind syntax</div>
+    <div class="tip-body">
+      <code>:class="cardBg"</code><br>
+      <code>:src="profileImg"</code><br>
+      <code>:href="githubUrl"</code><br>
+      <code>:style="{ color: textColor }"</code>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-title">🖼 รูปภาพฟรี</div>
+    <div class="tip-body">
+      <code>https://picsum.photos/seed/abc/200</code><br>
+      <code>https://api.dicebear.com/9.x/avataaars/svg?seed=ชื่อ</code><br>
+      เปลี่ยน seed เป็นชื่อตัวเอง
+    </div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="sec-title">📊 เกณฑ์การให้คะแนน (100 คะแนน)</div>
+<div style="background:#fff;border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:var(--sh)">
+  <table class="rubric-table">
+    <thead><tr><th>หัวข้อ</th><th>รายละเอียด</th><th style="text-align:right">คะแนน</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:600">Vite Project ทำงานได้</td><td style="color:var(--tx2)">npm run dev ขึ้น localhost ได้, ไม่มี error</td><td class="pts" style="text-align:right">20</td></tr>
+      <tr><td style="font-weight:600">ใช้ ref() ถูกต้อง</td><td style="color:var(--tx2)">ข้อมูลอยู่ใน ref() ทั้งหมด ไม่ hardcode ใน template</td><td class="pts" style="text-align:right">30</td></tr>
+      <tr><td style="font-weight:600">{{ }} แสดงผลถูกต้อง</td><td style="color:var(--tx2)">ข้อมูลจาก ref แสดงครบ อ่านได้ชัดเจน</td><td class="pts" style="text-align:right">25</td></tr>
+      <tr><td style="font-weight:600">v-bind ใช้งานได้</td><td style="color:var(--tx2)">มี :class หรือ :src หรือ :href อย่างน้อย 1 จุด</td><td class="pts" style="text-align:right">15</td></tr>
+      <tr><td style="font-weight:600">ความสวยงาม</td><td style="color:var(--tx2)">Tailwind สอดคล้อง, อ่านง่าย, ดูเป็นมืออาชีพ</td><td class="pts" style="text-align:right">10</td></tr>
+      <tr style="background:var(--os)"><td style="color:var(--o2);font-weight:700">Bonus — ระดับ 3</td><td style="color:var(--tx2)">Object ref(), 3 cards, template literal ครบ</td><td class="pts" style="text-align:right;color:var(--o2)">+10</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SUBMIT -->
+<div class="sec-title">📤 ส่งงาน</div>
+<div style="background:var(--gs);border:1px solid #BBF7D0;border-radius:14px;padding:16px 18px">
+  <div style="font-size:13px;font-weight:600;color:#14532D;margin-bottom:8px">Push ขึ้น GitHub repo เดิม</div>
+  <div class="code" style="font-size:12px">git add .
+git commit -m <span class="str">"Week 4 Profile Card - [ชื่อตัวเอง]"</span>
+git push</div>
+  <div style="font-size:12px;color:#14532D;margin-top:8px">ครูจะดูที่ GitHub — ตรวจให้แน่ใจว่าไฟล์ <kbd>App.vue</kbd> อยู่ใน folder <kbd>src/</kbd></div>
+</div>
+
+</div>
+
+<script>
+const P1=`<body style="background:#F1F5F9;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;margin:0"><div style="background:white;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:32px;width:260px;text-align:center"><div style="width:80px;height:80px;background:#FED7AA;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:36px">🙂</div><h2 style="font-size:20px;font-weight:700;color:#1A202C;margin-bottom:6px">สมชาย ใจดี</h2><p style="color:#F97316;font-weight:600;font-size:14px;margin-bottom:12px">แผนก IT</p><p style="color:#64748B;font-size:13px">อายุ 20 ปี · ปีเกิด 2548</p><p style="color:#64748B;font-size:13px">งานอดิเรก: ฟังเพลง</p></div></body>`;
+const P2=`<body style="background:linear-gradient(135deg,#FFF3E8,#FFFBEB);display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;margin:0"><div style="background:white;border-radius:20px;box-shadow:0 8px 32px rgba(249,115,22,.2);padding:0;width:280px;text-align:center;overflow:hidden"><div style="background:linear-gradient(135deg,#F97316,#FB923C);padding:28px 24px 20px"><img src="https://picsum.photos/seed/profile1/120/120" style="width:80px;height:80px;border-radius:50%;border:3px solid white;margin-bottom:10px;object-fit:cover"><h2 style="font-size:18px;font-weight:700;color:white;margin-bottom:2px">สมชาย ใจดี</h2><p style="color:#FDE68A;font-size:13px">แผนก IT · วท.เลย</p></div><div style="padding:16px 20px"><p style="color:#64748B;font-size:13px;margin-bottom:10px">อายุ 20 ปี (ปีเกิด 2548)</p><a href="#" style="display:inline-block;background:#F97316;color:white;padding:6px 18px;border-radius:20px;font-size:12px;font-weight:600;text-decoration:none">GitHub Profile</a></div></div></body>`;
+const P3=`<body style="background:#F8FAFC;font-family:sans-serif;margin:0;padding:24px"><h2 style="text-align:center;font-size:18px;font-weight:700;color:#1A202C;margin-bottom:20px">ทีม IT ปีสาม</h2><div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap"><div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:20px;width:160px;text-align:center;border-top:4px solid #F97316"><img src="https://api.dicebear.com/9.x/avataaars/svg?seed=somchai" style="width:60px;height:60px;border-radius:50%;margin-bottom:8px"><div style="font-weight:700;font-size:14px;color:#1A202C">สมชาย</div><div style="color:#F97316;font-size:12px;font-weight:600">Frontend</div><div style="color:#64748B;font-size:11px;margin-top:4px">อายุ 20 · ปีเกิด 2548</div></div><div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:20px;width:160px;text-align:center;border-top:4px solid #3B82F6"><img src="https://api.dicebear.com/9.x/avataaars/svg?seed=malee" style="width:60px;height:60px;border-radius:50%;margin-bottom:8px"><div style="font-weight:700;font-size:14px;color:#1A202C">มาลี</div><div style="color:#3B82F6;font-size:12px;font-weight:600">Backend</div><div style="color:#64748B;font-size:11px;margin-top:4px">อายุ 19 · ปีเกิด 2549</div></div><div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:20px;width:160px;text-align:center;border-top:4px solid #22C55E"><img src="https://api.dicebear.com/9.x/avataaars/svg?seed=krit" style="width:60px;height:60px;border-radius:50%;margin-bottom:8px"><div style="font-weight:700;font-size:14px;color:#1A202C">กฤต</div><div style="color:#22C55E;font-size:12px;font-weight:600">UI/UX</div><div style="color:#64748B;font-size:11px;margin-top:4px">อายุ 20 · ปีเกิด 2548</div></div></div></body>`;
+
+function showLv(n,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn');
+  btn.className='tab-btn a'+n;
+  document.getElementById('pframe').srcdoc=[P1,P2,P3][n-1];
+}
+showLv(1,document.querySelector('.tab-btn'));
+
+function copyCode(){
+  const raw=`<template>
+  <div class="min-h-screen bg-gray-100 flex items-center justify-center p-8">
+    <!-- TODO: สร้าง Profile Card ที่นี่ -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 w-72 text-center">
+      <h1 class="text-2xl font-bold text-gray-800">{{ name }}</h1>
+      <p class="text-gray-500 mt-2">อายุ {{ age }} ปี</p>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+// TODO: เพิ่ม ref() ตรงนี้
+const name = ref('ชื่อของคุณ')
+const age  = ref(20)
+<\/script>`;
+  navigator.clipboard.writeText(raw).then(()=>{const b=event.target;b.textContent='✅ Copied!';setTimeout(()=>b.textContent='📋 Copy',2000);}).catch(()=>{});
+}
+</script>
+</body>
+</html>
