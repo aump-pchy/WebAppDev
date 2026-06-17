@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fire-Safe Route — System Blueprint</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+:root{
+  --fire:#F97316;--fire-dark:#EA580C;--fire-red:#EF4444;
+  --fire-amber:#F59E0B;--safe:#22C55E;
+  --hero-bg:#170900;--card-bg:#1F0E02;--card-border:#3D1F05;
+  --txt:#F5E8D8;--txt2:#A8855A;--txt3:#6B4E2A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0F0500;font-family:'Mitr',sans-serif;font-weight:300;min-height:100vh}
+
+/* NAV */
+nav{display:flex;align-items:center;background:var(--hero-bg);border-bottom:1px solid var(--card-border);position:sticky;top:0;z-index:1000;overflow-x:auto}
+.nav-brand{display:flex;align-items:center;gap:10px;padding:13px 20px;border-right:1px solid var(--card-border);flex-shrink:0}
+.brand-icon{font-size:20px}
+.brand-name{font-size:15px;font-weight:500;color:var(--txt)}
+.brand-tag{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em}
+.nav-tabs{display:flex;padding:0 8px}
+.nav-tab{padding:15px 14px;font-size:12px;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.nav-tab:hover{color:var(--txt)}
+.nav-tab.active{color:var(--fire);border-bottom-color:var(--fire)}
+
+/* PAGES */
+.page{display:none}.page.active{display:block}
+
+/* HERO */
+.hero{background:var(--hero-bg);padding:56px 40px 48px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;min-height:440px}
+@media(max-width:768px){.hero{grid-template-columns:1fr;padding:32px 20px}}
+.hero-eyebrow{font-size:11px;color:var(--fire);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.eyebrow-line{width:32px;height:1px;background:var(--fire);opacity:.5}
+.hero-title{font-size:52px;font-weight:600;color:#fff;line-height:1.05;margin-bottom:18px}
+.hero-title .accent{color:var(--fire)}
+.hero-desc{font-size:15px;color:var(--txt2);line-height:1.9;margin-bottom:32px;max-width:480px}
+.hero-meta{display:flex;gap:28px;flex-wrap:wrap;padding-top:24px;border-top:1px solid var(--card-border)}
+.meta-lbl{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.meta-val{font-size:13px;font-weight:500;color:#F5CFA0}
+.hero-right{display:flex;flex-direction:column;gap:12px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.hstat{background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:12px;padding:16px 14px;text-align:center}
+.hstat-n{font-size:24px;font-weight:500;color:var(--fire);margin-bottom:4px}
+.hstat-l{font-size:11px;color:var(--txt3)}
+.hero-alert{display:flex;flex-direction:column;gap:6px}
+.alert-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:400}
+.a-high{background:#2D1117;color:#F85149;border:1px solid #3D1A1A}
+.a-warn{background:#1D160A;color:#F59E0B;border:1px solid #2D2210}
+.a-ok{background:#0D2B0D;color:#22C55E;border:1px solid #1A3A1A}
+.live-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MAP */
+.map-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--hero-bg);border-bottom:1px solid var(--card-border)}
+.map-title{font-size:13px;font-weight:500;color:var(--txt);display:flex;align-items:center;gap:8px}
+.map-btns{display:flex;gap:6px}
+.mbtn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--card-border);background:var(--card-bg);color:var(--txt3);font-family:'Mitr',sans-serif;transition:all .15s}
+.mbtn:hover,.mbtn.on{background:var(--card-border);color:var(--fire)}
+#loei-map{height:440px}
+.map-legend{display:flex;gap:20px;padding:12px 20px;background:var(--hero-bg);border-top:1px solid var(--card-border);flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--txt3)}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* SECTIONS */
+.section{max-width:860px;margin:0 auto;padding:40px 32px}
+@media(max-width:600px){.section{padding:28px 20px}}
+.section-label{font-size:11px;font-weight:500;color:var(--fire);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.section-title{font-size:26px;font-weight:500;color:var(--txt);margin-bottom:8px}
+.section-desc{font-size:14px;color:var(--txt2);line-height:1.85;margin-bottom:28px}
+.section-bg{background:#0A0300}
+
+/* WORKFLOW */
+.flow{display:flex;flex-direction:column;gap:0}
+.fstep{display:flex;gap:18px;position:relative}
+.fstep:not(:last-child)::after{content:'';position:absolute;left:20px;top:42px;width:1px;bottom:-14px;background:var(--card-border)}
+.fnum{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.fn1{background:#1C0800;color:#F97316;border:1px solid #7C2D12}
+.fn2{background:#1C1000;color:#F59E0B;border:1px solid #78350F}
+.fn3{background:#1C0000;color:#EF4444;border:1px solid #7F1D1D}
+.fn4{background:#0D1F0D;color:#22C55E;border:1px solid #14532D}
+.fn5{background:#0D0D1F;color:#818CF8;border:1px solid #312E81}
+.fbody{padding:8px 0 22px}
+.fname{font-size:15px;font-weight:500;color:var(--txt);margin-bottom:5px}
+.fdesc{font-size:13px;color:var(--txt2);line-height:1.8}
+.ftag{display:inline-flex;align-items:center;gap:4px;margin-top:7px;padding:3px 10px;border-radius:99px;font-size:11px;font-family:'JetBrains Mono',monospace}
+
+/* ARCH */
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.arch-grid{grid-template-columns:1fr}}
+.acard{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:20px}
+.acard-icon{font-size:22px;margin-bottom:10px}
+.acard-name{font-size:15px;font-weight:500;color:var(--txt);margin-bottom:6px}
+.acard-desc{font-size:12px;color:var(--txt2);line-height:1.7}
+.acard-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.atag{padding:3px 9px;border-radius:99px;font-size:11px;font-family:'JetBrains Mono',monospace}
+.at-green{background:#0D2B0D;color:#22C55E;border:1px solid #14532D}
+.at-blue{background:#0D1F3C;color:#60A5FA;border:1px solid #1E3A5F}
+.at-red{background:#2D1117;color:#F85149;border:1px solid #7F1D1D}
+.at-amber{background:#2B1D0E;color:#F59E0B;border:1px solid #78350F}
+.at-purple{background:#1A0F2E;color:#A78BFA;border:1px solid #312E81}
+
+/* THEME */
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.theme-grid{grid-template-columns:1fr}}
+.tcard{border-radius:12px;padding:22px;border:1px solid}
+.tc-smart{background:#0D1F3C;border-color:#1E3A5F}
+.tc-green{background:#0D2B0D;border-color:#14532D}
+.tc-safe{background:#2D1117;border-color:#7F1D1D}
+.tc-creative{background:#2B1D0E;border-color:#78350F}
+.tcard-icon{font-size:26px;margin-bottom:12px}
+.tcard-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.tc-smart .tcard-label{color:#60A5FA}
+.tc-green .tcard-label{color:#22C55E}
+.tc-safe .tcard-label{color:#F85149}
+.tc-creative .tcard-label{color:#F59E0B}
+.tcard-desc{font-size:13px;color:var(--txt2);line-height:1.75}
+
+/* TECH */
+.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:600px){.tech-grid{grid-template-columns:repeat(2,1fr)}}
+.tech-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:16px;text-align:center}
+.tech-icon{font-size:24px;margin-bottom:8px}
+.tech-name{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:3px}
+.tech-role{font-size:11px;color:var(--txt3)}
+.tech-badge{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:99px;font-size:10px}
+.tb-free{background:#0D2B0D;color:#22C55E;border:1px solid #14532D}
+
+/* ROADMAP */
+.road-list{display:flex;flex-direction:column;gap:10px}
+.ritem{display:flex;gap:16px;align-items:flex-start;padding:18px;background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px}
+.rphase{font-size:11px;font-weight:500;padding:4px 12px;border-radius:99px;flex-shrink:0;white-space:nowrap;margin-top:2px}
+.rp1{background:#2D1117;color:#F85149;border:1px solid #7F1D1D}
+.rp2{background:#2B1D0E;color:#F59E0B;border:1px solid #78350F}
+.rp3{background:#0D2B0D;color:#22C55E;border:1px solid #14532D}
+.rtitle{font-size:15px;font-weight:500;color:var(--txt);margin-bottom:5px}
+.rdesc{font-size:13px;color:var(--txt2);line-height:1.7}
+
+/* FOOTER */
+footer{background:var(--hero-bg);border-top:1px solid var(--card-border);padding:20px 32px;text-align:center;font-size:12px;color:var(--txt3)}
+footer span{color:var(--fire)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="brand-icon">🔥</div>
+    <div>
+      <div class="brand-name">Fire-Safe Route</div>
+      <div class="brand-tag">System Blueprint</div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="setTab('concept',this)">แนวคิด</div>
+    <div class="nav-tab" onclick="setTab('map',this)">แผนที่ Live</div>
+    <div class="nav-tab" onclick="setTab('workflow',this)">Workflow</div>
+    <div class="nav-tab" onclick="setTab('arch',this)">สถาปัตยกรรม</div>
+    <div class="nav-tab" onclick="setTab('theme',this)">Smart·Green·Safe·Creative</div>
+    <div class="nav-tab" onclick="setTab('tech',this)">Tech Stack</div>
+    <div class="nav-tab" onclick="setTab('road',this)">Roadmap</div>
+  </div>
+</nav>
+
+<!-- CONCEPT -->
+<div class="page active" id="p-concept">
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow"><div class="eyebrow-line"></div>AI Forest Fire Intelligence · จ.เลย</div>
+      <div class="hero-title">Fire-Safe<br><span class="accent">Route</span></div>
+      <div class="hero-desc">ระบบ AI พยากรณ์การลามของไฟป่าและคำนวณเส้นทางที่ปลอดภัยที่สุดสำหรับเจ้าหน้าที่ดับไฟ ในพื้นที่ป่า จ.เลย — ก่อนออกปฏิบัติการ</div>
+      <div class="hero-meta">
+        <div><div class="meta-lbl">ทีม</div><div class="meta-val">วิทยาลัยเทคนิคเลย</div></div>
+        <div><div class="meta-lbl">พื้นที่</div><div class="meta-val">จ.เลย ทั้งจังหวัด</div></div>
+        <div><div class="meta-lbl">รูปแบบ</div><div class="meta-val">Web Application</div></div>
+        <div><div class="meta-lbl">Track</div><div class="meta-val">Safe + Green</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-n">6 ชม.</div><div class="hstat-l">พยากรณ์ล่วงหน้า</div></div>
+        <div class="hstat"><div class="hstat-n">375 ม.</div><div class="hstat-l">ความละเอียด VIIRS</div></div>
+        <div class="hstat"><div class="hstat-n">฿0</div><div class="hstat-l">ค่า Open Data</div></div>
+      </div>
+      <div class="hero-alert">
+        <div class="alert-row a-high"><div class="live-dot"></div><i class="ti ti-flame"></i><span><b>Agent ตรวจพบ</b> จุดไฟ ต.ผาน้อย จ.เลย — FRP 48 MW</span></div>
+        <div class="alert-row a-warn"><i class="ti ti-wind"></i><span>ลมทิศตะวันตก 18 กม./ชม. — ไฟจะลามทิศตะวันออก</span></div>
+        <div class="alert-row a-ok"><i class="ti ti-route"></i><span><b>A* คำนวณเส้นทาง</b> ปลอดภัย 2 เส้น — พร้อมปฏิบัติการ</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAP -->
+<div class="page" id="p-map">
+  <div class="map-header">
+    <div class="map-title"><i class="ti ti-map-2"></i>แผนที่ จ.เลย — ข้อมูลจำลองสำหรับ Demo</div>
+    <div class="map-btns">
+      <button class="mbtn on" id="btn-fire" onclick="toggleLayer('fire',this)"><i class="ti ti-flame"></i>จุดไฟ</button>
+      <button class="mbtn on" id="btn-risk" onclick="toggleLayer('risk',this)"><i class="ti ti-alert-triangle"></i>Risk Zone</button>
+      <button class="mbtn on" id="btn-route" onclick="toggleLayer('route',this)"><i class="ti ti-route"></i>เส้นทาง A*</button>
+    </div>
+  </div>
+  <div id="loei-map"></div>
+  <div class="map-legend">
+    <div class="leg"><div class="leg-dot" style="background:#EF4444"></div>จุดไฟ NASA FIRMS</div>
+    <div class="leg"><div class="leg-dot" style="background:#F97316;opacity:.7"></div>Risk สูง</div>
+    <div class="leg"><div class="leg-dot" style="background:#F59E0B;opacity:.6"></div>Risk กลาง</div>
+    <div class="leg"><div class="leg-dot" style="background:#22C55E"></div>เส้นทางปลอดภัย (A*)</div>
+    <div class="leg"><div class="leg-dot" style="background:#60A5FA"></div>จุดเริ่ม/ปลายทาง</div>
+  </div>
+</div>
+
+<!-- WORKFLOW -->
+<div class="page section-bg" id="p-workflow">
+  <div class="section">
+    <div class="section-label">ขั้นตอนการทำงาน</div>
+    <div class="section-title">Workflow — ดาวเทียมสู่เส้นทางปลอดภัย</div>
+    <div class="section-desc">ข้อมูลจาก 3 แหล่ง Open Data ถูกประมวลผลผ่าน ML และ Pathfinding Algorithm เพื่อแนะนำเส้นทางก่อนเจ้าหน้าที่ออกภาคสนาม</div>
+    <div class="flow">
+      <div class="fstep">
+        <div class="fnum fn1">01</div>
+        <div class="fbody">
+          <div class="fname">รับจุดความร้อนจาก NASA FIRMS</div>
+          <div class="fdesc">ดึงข้อมูล hotspot VIIRS SNPP ทุก 3 ชั่วโมง ครอบคลุมพื้นที่ป่าทั่ว จ.เลย ความละเอียด 375 เมตร พร้อมค่า FRP (Fire Radiative Power) บอกความรุนแรงของไฟ</div>
+          <span class="ftag" style="background:#1C0800;color:#F97316">NASA FIRMS VIIRS API</span>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fnum fn2">02</div>
+        <div class="fbody">
+          <div class="fname">วิเคราะห์สภาพอากาศ Real-time</div>
+          <div class="fdesc">ดึงทิศทางลม ความเร็วลม ความชื้นสัมพัทธ์ จาก Open-Meteo API แบบ real-time ข้อมูลเหล่านี้เป็นปัจจัยหลักในการคำนวณว่าไฟจะลามไปทิศทางใด</div>
+          <span class="ftag" style="background:#1C1000;color:#F59E0B">Open-Meteo Weather API</span>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fnum fn3">03</div>
+        <div class="fbody">
+          <div class="fname">AI พยากรณ์การลามไฟ (ML Core)</div>
+          <div class="fdesc">Random Forest Model ทำนาย risk level ทุก grid ขนาด 500m โดยพิจารณา ทิศลม ความลาดชัน (SRTM DEM) และประเภทพืชพรรณ — train บน Synthetic Dataset ที่สร้างจาก Rothermel fire spread equations แก้ปัญหาการขาด historical data</div>
+          <span class="ftag" style="background:#1C0000;color:#EF4444">Random Forest · scikit-learn</span>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fnum fn4">04</div>
+        <div class="fbody">
+          <div class="fname">คำนวณเส้นทางปลอดภัย A*</div>
+          <div class="fdesc">A* Algorithm ค้นหาเส้นทางบน risk map โดยให้ cost สูงกับ grid ที่ ML ทำนายว่าเสี่ยงสูง ผลลัพธ์คือเส้นทางที่ผ่านโซนอันตรายน้อยที่สุดสำหรับเจ้าหน้าที่</div>
+          <span class="ftag" style="background:#0D1F0D;color:#22C55E">A* Pathfinding · NetworkX</span>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fnum fn5">05</div>
+        <div class="fbody">
+          <div class="fname">แสดงผลบน Web Dashboard</div>
+          <div class="fdesc">แผนที่ interactive พร้อม fire risk heatmap เส้นทางแนะนำ และ event log real-time เจ้าหน้าที่ใช้วางแผนก่อนออกปฏิบัติการ ไม่ต้องรอข้อมูล real-time จาก field</div>
+          <span class="ftag" style="background:#0D0D1F;color:#818CF8">Leaflet.js · React · Flask</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARCH -->
+<div class="page" id="p-arch">
+  <div class="section">
+    <div class="section-label">สถาปัตยกรรมระบบ</div>
+    <div class="section-title">System Architecture</div>
+    <div class="section-desc">4 ชั้นทำงานต่อเนื่องกัน ตั้งแต่ Open Data จนถึงการแสดงผลบนแผนที่ ทุกส่วนใช้ Open Source ฟรีทั้งหมด</div>
+    <div class="arch-grid">
+      <div class="acard">
+        <div class="acard-icon"><i class="ti ti-satellite" style="color:#22C55E;font-size:28px"></i></div>
+        <div class="acard-name">Data Layer</div>
+        <div class="acard-desc">รับข้อมูล Open Data 3 แหล่งฟรีทั้งหมด อัปเดตอัตโนมัติตามรอบเวลาของแต่ละ source ไม่มีค่าใช้จ่าย</div>
+        <div class="acard-tags">
+          <span class="atag at-green">NASA FIRMS</span>
+          <span class="atag at-blue">Open-Meteo</span>
+          <span class="atag at-amber">SRTM DEM</span>
+        </div>
+      </div>
+      <div class="acard">
+        <div class="acard-icon"><i class="ti ti-brain" style="color:#EF4444;font-size:28px"></i></div>
+        <div class="acard-name">ML Engine</div>
+        <div class="acard-desc">Random Forest พยากรณ์ risk map โดย train จาก Synthetic Dataset ที่สร้างจาก Rothermel fire spread model output คือ risk level ทุก grid 500m</div>
+        <div class="acard-tags">
+          <span class="atag at-red">scikit-learn</span>
+          <span class="atag at-amber">Python</span>
+          <span class="atag at-green">Google Colab</span>
+        </div>
+      </div>
+      <div class="acard">
+        <div class="acard-icon"><i class="ti ti-route" style="color:#F97316;font-size:28px"></i></div>
+        <div class="acard-name">Routing Engine</div>
+        <div class="acard-desc">A* Algorithm ค้นหาเส้นทางบน risk map โดย cost function คือค่าความเสี่ยงของแต่ละ grid ที่ ML คำนวณ รองรับการกำหนดจุดเริ่มและปลายทางได้อิสระ</div>
+        <div class="acard-tags">
+          <span class="atag at-amber">NetworkX</span>
+          <span class="atag at-blue">Flask API</span>
+        </div>
+      </div>
+      <div class="acard">
+        <div class="acard-icon"><i class="ti ti-map-2" style="color:#818CF8;font-size:28px"></i></div>
+        <div class="acard-name">Visualization</div>
+        <div class="acard-desc">Web dashboard แผนที่ interactive พร้อม fire risk overlay เส้นทางปลอดภัย event log และ toggle layer — ใช้งานได้บน browser ทุก device</div>
+        <div class="acard-tags">
+          <span class="atag at-purple">Leaflet.js</span>
+          <span class="atag at-blue">React</span>
+          <span class="atag at-green">Vercel Free</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THEME -->
+<div class="page section-bg" id="p-theme">
+  <div class="section">
+    <div class="section-label">แนวคิดการแข่งขัน</div>
+    <div class="section-title">Smart · Green · Safe · Creative</div>
+    <div class="section-desc">Fire-Safe Route ตอบโจทย์ทุกแนวคิดหลักของ Coding Thailand 2026: AI Inspires the Future</div>
+    <div class="theme-grid">
+      <div class="tcard tc-smart">
+        <div class="tcard-icon"><i class="ti ti-brain" style="color:#60A5FA;font-size:28px"></i></div>
+        <div class="tcard-label">Smart</div>
+        <div class="tcard-desc">ML พยากรณ์การลามไฟล่วงหน้าได้ 1-6 ชั่วโมง ทำให้เจ้าหน้าที่วางแผนได้ก่อนสถานการณ์เลวร้าย ไม่ใช่แค่ตอบสนองหลังเกิดเหตุ</div>
+      </div>
+      <div class="tcard tc-green">
+        <div class="tcard-icon"><i class="ti ti-trees" style="color:#22C55E;font-size:28px"></i></div>
+        <div class="tcard-label">Green</div>
+        <div class="tcard-desc">ช่วยควบคุมไฟป่าได้รวดเร็วขึ้น ลดพื้นที่ป่าที่ถูกทำลาย ปกป้องระบบนิเวศและความหลากหลายทางชีวภาพของป่า จ.เลย</div>
+      </div>
+      <div class="tcard tc-safe">
+        <div class="tcard-icon"><i class="ti ti-shield-check" style="color:#F85149;font-size:28px"></i></div>
+        <div class="tcard-label">Safe</div>
+        <div class="tcard-desc">ลดความเสี่ยงที่เจ้าหน้าที่จะถูกไฟล้อมด้วยเส้นทางที่หลีกเลี่ยงโซนอันตราย ปกป้องชีวิตผู้ปฏิบัติงานในภาคสนามทุกคน</div>
+      </div>
+      <div class="tcard tc-creative">
+        <div class="tcard-icon"><i class="ti ti-sparkles" style="color:#F59E0B;font-size:28px"></i></div>
+        <div class="tcard-label">Creative</div>
+        <div class="tcard-desc">ผสาน Open Data NASA + ML + GIS ในแบบที่ไม่มีใครทำในระดับท้องถิ่น แก้ปัญหาขาด dataset ด้วย Synthetic Data จาก physics equations</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TECH -->
+<div class="page" id="p-tech">
+  <div class="section">
+    <div class="section-label">เทคโนโลยี</div>
+    <div class="section-title">Tech Stack — Open Source ทั้งหมด</div>
+    <div class="section-desc">ไม่มีค่าใช้จ่ายด้าน data หรือ infrastructure Train บน Google Colab ฟรี Deploy บน Vercel ฟรี</div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-satellite" style="color:#22C55E;font-size:28px"></i></div>
+        <div class="tech-name">NASA FIRMS</div>
+        <div class="tech-role">จุดความร้อน VIIRS</div>
+        <div><span class="tech-badge tb-free">ฟรี</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-wind" style="color:#60A5FA;font-size:28px"></i></div>
+        <div class="tech-name">Open-Meteo</div>
+        <div class="tech-role">ข้อมูลลม-อากาศ</div>
+        <div><span class="tech-badge tb-free">ฟรี</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-mountain" style="color:#F59E0B;font-size:28px"></i></div>
+        <div class="tech-name">SRTM DEM</div>
+        <div class="tech-role">ภูมิประเทศ-ความลาด</div>
+        <div><span class="tech-badge tb-free">ฟรี</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-brain" style="color:#EF4444;font-size:28px"></i></div>
+        <div class="tech-name">scikit-learn</div>
+        <div class="tech-role">Random Forest ML</div>
+        <div><span class="tech-badge tb-free">Open Source</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-route" style="color:#F97316;font-size:28px"></i></div>
+        <div class="tech-name">NetworkX</div>
+        <div class="tech-role">A* Pathfinding</div>
+        <div><span class="tech-badge tb-free">Open Source</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-map-2" style="color:#818CF8;font-size:28px"></i></div>
+        <div class="tech-name">Leaflet.js</div>
+        <div class="tech-role">Interactive Map</div>
+        <div><span class="tech-badge tb-free">Open Source</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-brand-python" style="color:#60A5FA;font-size:28px"></i></div>
+        <div class="tech-name">Python + Flask</div>
+        <div class="tech-role">Backend API</div>
+        <div><span class="tech-badge tb-free">Open Source</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-brand-react" style="color:#60A5FA;font-size:28px"></i></div>
+        <div class="tech-name">React</div>
+        <div class="tech-role">Frontend Dashboard</div>
+        <div><span class="tech-badge tb-free">Open Source</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon"><i class="ti ti-brand-google" style="color:#F59E0B;font-size:28px"></i></div>
+        <div class="tech-name">Google Colab</div>
+        <div class="tech-role">Train ML Model</div>
+        <div><span class="tech-badge tb-free">ฟรี GPU</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROADMAP -->
+<div class="page section-bg" id="p-road">
+  <div class="section">
+    <div class="section-label">แผนการพัฒนา</div>
+    <div class="section-title">Roadmap</div>
+    <div class="section-desc">จาก Proof of Concept ในงานแข่ง สู่ระบบที่ใช้งานได้จริงกับเจ้าหน้าที่ป่าไม้ จ.เลย</div>
+    <div class="road-list">
+      <div class="ritem">
+        <span class="rphase rp1">Phase 1 — แข่งขัน</span>
+        <div>
+          <div class="rtitle">Proof of Concept · Hackathon Demo</div>
+          <div class="rdesc">สร้าง Synthetic Dataset จาก Rothermel model · Train Random Forest · คำนวณ A* บนแผนที่ จ.เลย จริง · Demo ในงาน Coding Thailand 2026 ขอนแก่น</div>
+        </div>
+      </div>
+      <div class="ritem">
+        <span class="rphase rp2">Phase 2 — Validate</span>
+        <div>
+          <div class="rtitle">ทดสอบกับข้อมูลจริง จ.เลย</div>
+          <div class="rdesc">รวบรวม historical fire data จากกรมอุทยานฯ · Validate model กับเหตุการณ์จริงในอดีต · ปรับ parameter ให้เหมาะกับ terrain จ.เลย · ทดสอบกับเจ้าหน้าที่จริง</div>
+        </div>
+      </div>
+      <div class="ritem">
+        <span class="rphase rp3">Phase 3 — Deploy</span>
+        <div>
+          <div class="rtitle">ส่งมอบระบบใช้งานจริง</div>
+          <div class="rdesc">ส่งมอบให้หน่วยงานป่าไม้และอุทยาน จ.เลย · เพิ่ม Mobile App สำหรับเจ้าหน้าที่ภาคสนาม · ขยายครอบคลุมพื้นที่ป่าทั่วภาคอีสาน</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Fire-Safe Route</span> · Coding Thailand Challenge 2026: AI Inspires the Future<br>
+  วิทยาลัยเทคนิคเลย · จ.เลย · Safe + Green Track
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+function setTab(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='map') initMap();
+}
+
+let mapInit=false,lmap,layers={};
+
+function initMap(){
+  if(mapInit)return;
+  mapInit=true;
+  lmap=L.map('loei-map').setView([17.25,101.5],9);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy;OpenStreetMap &copy;CARTO',maxZoom:18,subdomains:'abcd'
+  }).addTo(lmap);
+
+  const fireIcon=L.divIcon({
+    html:'<div style="width:14px;height:14px;background:#EF4444;border-radius:50%;border:2px solid #FCA5A5;box-shadow:0 0 10px #EF4444aa"></div>',
+    iconSize:[14,14],iconAnchor:[7,7],className:''
+  });
+
+  const spots=[
+    [16.835,101.793,'ภูกระดึง','FRP: 48 MW','high'],
+    [16.900,101.200,'นาแห้ว','FRP: 32 MW','high'],
+    [16.980,101.544,'ภูหลวง','FRP: 22 MW','medium'],
+    [17.278,101.147,'ด่านซ้าย','FRP: 14 MW','medium'],
+    [17.060,101.680,'ปากชม','FRP: 8 MW','low'],
+  ];
+
+  const fg=L.layerGroup();
+  spots.forEach(s=>{
+    const c=s[4]==='high'?'#EF4444':s[4]==='medium'?'#F97316':'#F59E0B';
+    const r=s[4]==='high'?5000:s[4]==='medium'?3500:2000;
+    L.circle([s[0],s[1]],{radius:r*3,color:c,fillColor:c,fillOpacity:0.1,weight:1}).addTo(fg);
+    L.circle([s[0],s[1]],{radius:r,color:c,fillColor:c,fillOpacity:0.3,weight:1.5}).addTo(fg);
+    L.marker([s[0],s[1]],{icon:fireIcon})
+      .bindPopup(`<div style="font-family:Mitr,sans-serif"><b style="color:#EF4444">🔥 ${s[2]}</b><br>${s[3]}<br>ระดับ: <b>${s[4]}</b></div>`)
+      .addTo(fg);
+  });
+  layers['fire']=fg;
+  fg.addTo(lmap);
+
+  const rg=L.layerGroup();
+  L.polygon([[16.75,101.68],[16.92,101.90],[16.98,101.78],[16.80,101.62]],
+    {color:'#F97316',fillColor:'#F97316',fillOpacity:0.1,weight:1.5,dashArray:'5,4'}).addTo(rg);
+  L.polygon([[16.82,101.08],[17.02,101.35],[17.08,101.22],[16.88,100.98]],
+    {color:'#F97316',fillColor:'#F97316',fillOpacity:0.1,weight:1,dashArray:'5,4'}).addTo(rg);
+  L.polygon([[16.92,101.44],[17.04,101.62],[17.10,101.52],[16.98,101.35]],
+    {color:'#F59E0B',fillColor:'#F59E0B',fillOpacity:0.09,weight:1,dashArray:'5,4'}).addTo(rg);
+  layers['risk']=rg;
+  rg.addTo(lmap);
+
+  const routePts=[
+    [17.485,101.739],[17.35,101.72],[17.20,101.76],
+    [17.05,101.81],[16.95,101.80],[16.835,101.793]
+  ];
+  const roG=L.layerGroup();
+  L.polyline(routePts,{color:'#22C55E',weight:4,opacity:.85,dashArray:'10,5'}).addTo(roG);
+  const si=L.divIcon({html:'<div style="width:13px;height:13px;background:#60A5FA;border-radius:50%;border:2.5px solid #fff"></div>',iconSize:[13,13],iconAnchor:[6,6],className:''});
+  const ei=L.divIcon({html:'<div style="width:13px;height:13px;background:#22C55E;border-radius:50%;border:2.5px solid #fff"></div>',iconSize:[13,13],iconAnchor:[6,6],className:''});
+  L.marker([17.485,101.739],{icon:si}).bindPopup('<div style="font-family:Mitr,sans-serif"><b style="color:#60A5FA">จุดเริ่มต้น</b><br>อ.เมืองเลย</div>').addTo(roG);
+  L.marker([16.835,101.793],{icon:ei}).bindPopup('<div style="font-family:Mitr,sans-serif"><b style="color:#22C55E">ปลายทาง</b><br>เขตดับเพลิง ภูกระดึง</div>').addTo(roG);
+  layers['route']=roG;
+  roG.addTo(lmap);
+}
+
+function toggleLayer(id,btn){
+  btn.classList.toggle('on');
+  if(layers[id]){
+    if(lmap.hasLayer(layers[id]))lmap.removeLayer(layers[id]);
+    else layers[id].addTo(lmap);
+  }
+}
+</script>
+</body>
+</html>
