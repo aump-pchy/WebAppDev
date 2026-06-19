@@ -1,0 +1,374 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif}
+.wrap{max-width:680px;padding:1.5rem 0}
+.progress{display:flex;align-items:center;gap:0;margin-bottom:2rem}
+.prog-step{display:flex;align-items:center;gap:0;flex:1}
+.prog-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;transition:all .3s;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.prog-dot.done{background:#0F6E56;color:#fff;border-color:#0F6E56}
+.prog-dot.active{background:#EAF3DE;color:#085041;border-color:#0F6E56}
+.prog-line{flex:1;height:1px;background:var(--color-border-tertiary);margin:0 4px}
+.prog-line.done{background:#0F6E56}
+.step-panel{display:none}
+.step-panel.active{display:block}
+.step-header{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem}
+.step-num{width:36px;height:36px;border-radius:50%;background:#EAF3DE;color:#085041;font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-size:17px;font-weight:500;color:var(--color-text-primary)}
+.step-sub{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.card-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+pre{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px 14px;font-size:13px;font-family:monospace;overflow-x:auto;line-height:1.6;color:var(--color-text-primary)}
+.kw{color:#7F77DD}
+.str{color:#0F6E56}
+.cm{color:var(--color-text-tertiary)}
+.tip{background:var(--color-background-secondary);border-left:3px solid #0F6E56;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:10px 14px;font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem;display:flex;gap:10px}
+.warn{background:var(--color-background-secondary);border-left:3px solid #BA7517;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:10px 14px;font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem;display:flex;gap:10px}
+.checklist{display:flex;flex-direction:column;gap:8px}
+.check-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--color-text-primary);cursor:pointer;padding:8px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);transition:background .15s}
+.check-item:hover{background:var(--color-background-secondary)}
+.check-item.checked{background:var(--color-background-secondary);color:var(--color-text-secondary);text-decoration:line-through}
+.check-box{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.check-box.checked{background:#0F6E56;border-color:#0F6E56}
+.check-box.checked::after{content:'✓';color:#fff;font-size:11px}
+.preview-doc{background:#fff;color:#000;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:24px;font-size:12px;line-height:1.7;font-family:'Sarabun',sans-serif}
+.preview-doc h4{font-size:13px;font-weight:500;text-align:center;margin-bottom:8px;color:#000}
+.preview-row{display:flex;gap:12px;margin-bottom:4px;flex-wrap:wrap}
+.preview-field{display:flex;gap:4px;font-size:12px;color:#000}
+.ul{border-bottom:1px solid #000;min-width:80px;display:inline-block}
+.preview-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
+.preview-table th,.preview-table td{border:1px solid #000;padding:3px 5px;text-align:center}
+.preview-table th{background:#f0f0f0}
+.cb{display:inline-block;width:10px;height:10px;border:1px solid #000;margin-right:3px;vertical-align:middle;text-align:center;line-height:10px;font-size:8px}
+.cb.on::after{content:'✓'}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--color-border-tertiary)}
+.btn{padding:8px 18px;border-radius:var(--border-radius-md);font-size:14px;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-family:'Sarabun',sans-serif;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:#0F6E56;color:#fff;border-color:#0F6E56;font-weight:500}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+.badge-green{background:#EAF3DE;color:#085041}
+.badge-purple{background:#EEEDFE;color:#3C3489}
+.step-count{font-size:13px;color:var(--color-text-secondary)}
+.section-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500&display=swap" rel="stylesheet">
+
+<h2 class="sr-only">Tutorial: การ Export PDF แบบฟอร์มบันทึกการสอนด้วย html2pdf.js</h2>
+
+<div class="wrap">
+  <div style="margin-bottom:1.5rem">
+    <p style="font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">Export PDF บันทึกการสอน</p>
+    <p style="font-size:14px;color:var(--color-text-secondary)">ทำตามทีละขั้นตอน — html2pdf.js + Vue 3</p>
+  </div>
+
+  <div class="progress" id="progress">
+    <div class="prog-step"><div class="prog-dot active" id="pd1">1</div><div class="prog-line" id="pl1"></div></div>
+    <div class="prog-step"><div class="prog-dot" id="pd2">2</div><div class="prog-line" id="pl2"></div></div>
+    <div class="prog-step"><div class="prog-dot" id="pd3">3</div><div class="prog-line" id="pl3"></div></div>
+    <div class="prog-step"><div class="prog-dot" id="pd4">4</div><div class="prog-line" id="pl4"></div></div>
+    <div class="prog-step"><div class="prog-dot" id="pd5">5</div><div class="prog-line" style="background:transparent"></div></div>
+  </div>
+
+  <!-- STEP 1: Install -->
+  <div class="step-panel active" id="step1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div>
+        <p class="step-title">ติดตั้ง html2pdf.js</p>
+        <p class="step-sub">รันคำสั่งนี้ใน terminal ที่โฟลเดอร์ frontend</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-terminal" aria-hidden="true"></i> terminal</div>
+      <pre>npm install html2pdf.js</pre>
+    </div>
+
+    <div class="tip">
+      <i class="ti ti-info-circle" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px;color:#0F6E56"></i>
+      <span>html2pdf.js ทำงานโดย render HTML → canvas → แปลงเป็น PDF ภาษาไทยออกมาสวยโดยไม่ต้อง embed font เพิ่ม</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-checklist" aria-hidden="true"></i> เช็คก่อนไปต่อ</div>
+      <div class="checklist" id="cl1">
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"></div>อยู่ใน folder frontend แล้ว</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"></div>รัน npm install สำเร็จ ไม่มี error</div>
+        <div class="check-item" onclick="toggle(this)"><div class="check-box"></div>เห็น html2pdf.js ใน node_modules</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Template HTML -->
+  <div class="step-panel" id="step2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div>
+        <p class="step-title">สร้าง print area ใน template</p>
+        <p class="step-sub">ส่วนที่จะถูก export เป็น PDF ต้องอยู่ใน div ที่มี ref</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-file-code" aria-hidden="true"></i> LogDetailView.vue — &lt;template&gt;</div>
+      <pre><span class="cm">&lt;!-- ปุ่ม export --&gt;</span>
+<span class="kw">&lt;button</span> @click=<span class="str">"exportPDF"</span><span class="kw">&gt;</span>Export PDF<span class="kw">&lt;/button&gt;</span>
+
+<span class="cm">&lt;!-- ✅ print area — ใส่ ref และ id --&gt;</span>
+<span class="kw">&lt;div</span> <span class="str">id="print-area"</span> ref=<span class="str">"printArea"</span><span class="kw">&gt;</span>
+
+  <span class="cm">&lt;!-- หัวเอกสาร --&gt;</span>
+  <span class="kw">&lt;h2&gt;</span>แบบบันทึกการจัดการเรียนการสอน<span class="kw">&lt;/h2&gt;</span>
+  <span class="kw">&lt;p&gt;</span>ครูผู้สอน: {{ log.teacher }}<span class="kw">&lt;/p&gt;</span>
+  <span class="kw">&lt;p&gt;</span>แผนกวิชา: {{ log.department }}<span class="kw">&lt;/p&gt;</span>
+
+  <span class="cm">&lt;!-- ตารางเข้าเรียน --&gt;</span>
+  <span class="kw">&lt;table&gt;</span>...<span class="kw">&lt;/table&gt;</span>
+
+  <span class="cm">&lt;!-- checkboxes, ผลการเรียน, ลายเซ็น --&gt;</span>
+
+<span class="kw">&lt;/div&gt;</span></pre>
+    </div>
+
+    <div class="warn">
+      <i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px;color:#BA7517"></i>
+      <span>ห้ามใช้ position: fixed หรือ sticky ใน print-area เพราะ html2canvas จะ render ผิดตำแหน่ง</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-eye" aria-hidden="true"></i> ตัวอย่าง layout ที่จะได้</div>
+      <div class="preview-doc">
+        <h4>แบบบันทึกการจัดการเรียนการสอนสำหรับรายวิชาในสถานประกอบการ ภาคเรียนที่ 1/2569</h4>
+        <div class="preview-row">
+          <div class="preview-field">ครูผู้สอน <span class="ul">นายอัมพร พชรกุล</span></div>
+          <div class="preview-field">แผนกวิชา <span class="ul">เทคโนโลยีสารสนเทศ</span></div>
+        </div>
+        <div class="preview-row">
+          <div class="preview-field">สัปดาห์ที่ <span class="ul">1</span></div>
+          <div class="preview-field">ระหว่างวันที่ <span class="ul">2 มิถุนายน</span> ถึง <span class="ul">6 มิถุนายน</span></div>
+        </div>
+        <table class="preview-table">
+          <thead><tr><th colspan="3">วัน/เวลา</th><th colspan="3">จำนวนนักเรียน</th><th>ปัญหา</th></tr>
+          <tr><th>วันที่สอน</th><th>คาบที่</th><th>เวลา</th><th>ทั้งหมด</th><th>เข้าเรียน</th><th>ร้อยละ</th><th></th></tr></thead>
+          <tbody><tr><td>จันทร์ 2 มิ.ย.</td><td>1-2</td><td>08:00-09:50</td><td>30</td><td>28</td><td>93.3%</td><td>-</td></tr></tbody>
+        </table>
+        <p style="font-size:11px;margin-top:6px"><span class="cb on"></span>On-Site &nbsp;<span class="cb"></span>On-Line &nbsp;<span class="cb on"></span>บรรยาย &nbsp;<span class="cb on"></span>PowerPoint</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Script -->
+  <div class="step-panel" id="step3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div>
+        <p class="step-title">เขียน exportPDF function</p>
+        <p class="step-sub">ใส่ใน &lt;script setup&gt; ของ LogDetailView.vue</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-file-code" aria-hidden="true"></i> LogDetailView.vue — &lt;script setup&gt;</div>
+      <pre><span class="kw">import</span> { ref } <span class="kw">from</span> <span class="str">'vue'</span>
+<span class="kw">import</span> html2pdf <span class="kw">from</span> <span class="str">'html2pdf.js'</span>
+
+<span class="kw">const</span> printArea = ref(<span class="kw">null</span>)
+
+<span class="kw">function</span> exportPDF() {
+  <span class="kw">const</span> opt = {
+    margin:      [<span class="str">15, 15, 15, 15</span>],  <span class="cm">// mm</span>
+    filename:    <span class="str">`บันทึกสอน_สัปดาห์${log.value.week}.pdf`</span>,
+    image:       { type: <span class="str">'jpeg'</span>, quality: <span class="str">0.98</span> },
+    html2canvas: {
+      scale:       <span class="str">2</span>,          <span class="cm">// ความชัด</span>
+      useCORS:     <span class="str">true</span>,       <span class="cm">// โหลด image จาก Supabase Storage</span>
+      windowWidth: <span class="str">794</span>        <span class="cm">// A4 width (px)</span>
+    },
+    jsPDF: {
+      unit:        <span class="str">'mm'</span>,
+      format:      <span class="str">'a4'</span>,
+      orientation: <span class="str">'portrait'</span>
+    }
+  }
+
+  html2pdf()
+    .set(opt)
+    .from(printArea.value)
+    .save()
+}</pre>
+    </div>
+
+    <div class="tip">
+      <i class="ti ti-info-circle" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px;color:#0F6E56"></i>
+      <span><strong>windowWidth: 794</strong> สำคัญมาก — บอกให้ html2canvas render ที่ความกว้าง A4 พอดี ถ้าไม่ใส่ layout จะเพี้ยน</span>
+    </div>
+  </div>
+
+  <!-- STEP 4: CSS -->
+  <div class="step-panel" id="step4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div>
+        <p class="step-title">จัด CSS ให้ตรงแบบฟอร์ม</p>
+        <p class="step-sub">กำหนด style ของ #print-area ให้ตรงกับ format ต้นฉบับ</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-palette" aria-hidden="true"></i> &lt;style&gt; — print area</div>
+      <pre><span class="cm">/* กรอบหลัก — กว้าง A4 */</span>
+<span class="kw">#print-area</span> {
+  width:       <span class="str">794px</span>;
+  margin:      <span class="str">0 auto</span>;
+  padding:     <span class="str">40px</span>;
+  font-family: <span class="str">'Sarabun', sans-serif</span>;
+  font-size:   <span class="str">14px</span>;
+  line-height: <span class="str">1.8</span>;
+  color:       <span class="str">#000</span>;
+  background:  <span class="str">#fff</span>;
+}
+
+<span class="cm">/* ตาราง */</span>
+<span class="kw">#print-area table</span> {
+  width:           <span class="str">100%</span>;
+  border-collapse: <span class="str">collapse</span>;
+  font-size:       <span class="str">13px</span>;
+  page-break-inside: <span class="str">avoid</span>; <span class="cm">/* ห้ามตัดกลางตาราง */</span>
+}
+<span class="kw">#print-area th, #print-area td</span> {
+  border:  <span class="str">1px solid #000</span>;
+  padding: <span class="str">4px 8px</span>;
+}
+
+<span class="cm">/* เส้นใต้แทน input */</span>
+<span class="kw">.underline-field</span> {
+  border-bottom: <span class="str">1px solid #000</span>;
+  min-width:     <span class="str">120px</span>;
+  display:       <span class="str">inline-block</span>;
+  text-align:    <span class="str">center</span>;
+}
+
+<span class="cm">/* checkbox style */</span>
+<span class="kw">.cb-box</span> {
+  display:        <span class="str">inline-block</span>;
+  width:          <span class="str">12px</span>;
+  height:         <span class="str">12px</span>;
+  border:         <span class="str">1px solid #000</span>;
+  margin-right:   <span class="str">4px</span>;
+  vertical-align: <span class="str">middle</span>;
+  text-align:     <span class="str">center</span>;
+  line-height:    <span class="str">12px</span>;
+  font-size:      <span class="str">10px</span>;
+}
+
+<span class="cm">/* ตัดหน้าตรงที่ต้องการ */</span>
+<span class="kw">.page-break</span> {
+  page-break-before: <span class="str">always</span>;
+}</pre>
+    </div>
+
+    <div class="two-col">
+      <div class="tip">
+        <i class="ti ti-check" aria-hidden="true" style="font-size:16px;flex-shrink:0;color:#0F6E56"></i>
+        <span>ใช้ <code>.underline-field</code> แทน input เพราะ html2canvas render input ไม่สวย</span>
+      </div>
+      <div class="tip">
+        <i class="ti ti-check" aria-hidden="true" style="font-size:16px;flex-shrink:0;color:#0F6E56"></i>
+        <span>รูปจาก Supabase Storage ต้องใช้ <code>useCORS: true</code> ถึงจะติดใน PDF</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Done -->
+  <div class="step-panel" id="step5">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div>
+        <p class="step-title">ทดสอบและ troubleshoot</p>
+        <p class="step-sub">ปัญหาที่พบบ่อยและวิธีแก้</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-bug" aria-hidden="true"></i> ปัญหาที่พบบ่อย</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:12px;padding:10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)">
+          <span class="badge badge-purple" style="flex-shrink:0;align-self:flex-start">layout เพี้ยน</span>
+          <span style="font-size:13px;color:var(--color-text-secondary)">เพิ่ม <code>windowWidth: 794</code> และกำหนด <code>width: 794px</code> ใน #print-area</span>
+        </div>
+        <div style="display:flex;gap:12px;padding:10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)">
+          <span class="badge badge-purple" style="flex-shrink:0;align-self:flex-start">ตารางถูกตัด</span>
+          <span style="font-size:13px;color:var(--color-text-secondary)">เพิ่ม <code>page-break-inside: avoid</code> ใน table</span>
+        </div>
+        <div style="display:flex;gap:12px;padding:10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)">
+          <span class="badge badge-purple" style="flex-shrink:0;align-self:flex-start">รูปไม่ขึ้น</span>
+          <span style="font-size:13px;color:var(--color-text-secondary)">ตรวจสอบ <code>useCORS: true</code> และ signed URL ยังไม่หมดอายุ</span>
+        </div>
+        <div style="display:flex;gap:12px;padding:10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)">
+          <span class="badge badge-purple" style="flex-shrink:0;align-self:flex-start">ภาษาไทยกล่อง</span>
+          <span style="font-size:13px;color:var(--color-text-secondary)">โหลด Sarabun font ก่อน export — รอ font load ด้วย <code>document.fonts.ready</code></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-clock" aria-hidden="true"></i> รอ font โหลดก่อน export (กรณีภาษาไทยกล่อง)</div>
+      <pre><span class="kw">async function</span> exportPDF() {
+  <span class="kw">await</span> document.fonts.ready  <span class="cm">// รอ Sarabun โหลด</span>
+  html2pdf().set(opt).from(printArea.value).save()
+}</pre>
+    </div>
+
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;display:flex;gap:12px;align-items:center">
+      <div style="width:36px;height:36px;border-radius:50%;background:#EAF3DE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="ti ti-check" aria-hidden="true" style="font-size:18px;color:#0F6E56"></i>
+      </div>
+      <div>
+        <p style="font-size:14px;font-weight:500;color:var(--color-text-primary)">พร้อมแล้ว!</p>
+        <p style="font-size:13px;color:var(--color-text-secondary)">ถ้ายังมีปัญหาอื่น บอก bro ได้เลย</p>
+      </div>
+      <button class="btn btn-primary" style="margin-left:auto" onclick="sendPrompt('PDF ยังมีปัญหาอยู่ ช่วย debug ให้หน่อย')">ถามต่อ ↗</button>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn" id="btn-prev" onclick="prevStep()" disabled><i class="ti ti-arrow-left" aria-hidden="true"></i> ย้อนกลับ</button>
+    <span class="step-count" id="step-count">ขั้นตอน 1 / 5</span>
+    <button class="btn btn-primary" id="btn-next" onclick="nextStep()">ถัดไป <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<script>
+var cur = 1, total = 5
+
+function goStep(n) {
+  document.getElementById('step'+cur).classList.remove('active')
+  document.getElementById('pd'+cur).classList.remove('active')
+  if(n > cur) document.getElementById('pd'+cur).classList.add('done')
+  if(n < cur) document.getElementById('pd'+cur).classList.remove('done')
+  cur = n
+  document.getElementById('step'+cur).classList.add('active')
+  document.getElementById('pd'+cur).classList.add('active')
+  for(var i=1;i<cur;i++){
+    document.getElementById('pd'+i).classList.add('done')
+    if(document.getElementById('pl'+i)) document.getElementById('pl'+i).classList.add('done')
+  }
+  for(var i=cur;i<=total;i++){
+    if(i>cur) document.getElementById('pd'+i).classList.remove('done')
+    if(document.getElementById('pl'+i)) document.getElementById('pl'+i).classList.remove('done')
+  }
+  document.getElementById('step-count').textContent = 'ขั้นตอน '+cur+' / '+total
+  document.getElementById('btn-prev').disabled = cur===1
+  document.getElementById('btn-next').disabled = cur===total
+  document.getElementById('btn-next').innerHTML = cur===total ? 'เสร็จสิ้น <i class="ti ti-check" aria-hidden="true"></i>' : 'ถัดไป <i class="ti ti-arrow-right" aria-hidden="true"></i>'
+}
+
+function nextStep(){ if(cur<total) goStep(cur+1) }
+function prevStep(){ if(cur>1) goStep(cur-1) }
+
+function toggle(el){
+  el.classList.toggle('checked')
+  el.querySelector('.check-box').classList.toggle('checked')
+}
+</script>
