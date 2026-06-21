@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Week 5 — v-if + v-for | 21901-2003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#FAFAFA;--sur:#FFF;--bd:#FFE4CC;--bd2:#FFC899;--o:#F97316;--o2:#EA580C;--o3:#FB923C;--os:#FFF3E8;--os2:#FFE8D0;--g:#22C55E;--gs:#F0FDF4;--b:#3B82F6;--bs:#EFF6FF;--r:#EF4444;--rs:#FEF2F2;--pu:#A855F7;--ps:#F3E8FF;--tx:#1A1A1A;--tx2:#555;--tx3:#999;--sh:0 2px 12px rgba(249,115,22,.1)}
+html,body{background:var(--bg);color:var(--tx);font-family:'Sarabun',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden}
+#rp{position:fixed;top:0;left:0;height:3px;width:0;z-index:1000;background:linear-gradient(90deg,var(--o),var(--o3),#FDE68A)}
+.snav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);padding:0 1.5rem;height:52px;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.sni{white-space:nowrap;padding:5px 14px;border-radius:100px;font-size:13px;font-weight:500;color:var(--tx3);text-decoration:none;border:1px solid transparent;transition:all .2s}
+.sni:hover,.sni.active{color:var(--o);border-color:var(--bd2);background:var(--os)}
+.sep{color:var(--bd2);font-size:12px}
+.page{max-width:900px;margin:0 auto;padding:0 1.25rem 5rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:2px solid var(--bd)}
+.wk-tag{display:inline-flex;align-items:center;gap:7px;background:var(--os);border:1px solid var(--bd2);color:var(--o);padding:5px 16px;border-radius:100px;font-size:13px;margin-bottom:1.2rem;font-weight:600}
+.hero h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;line-height:1.15;margin-bottom:.5rem}
+.hero h1 span{background:linear-gradient(135deg,var(--o),var(--o3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--tx2);font-size:14px;max-width:560px;margin-bottom:1.5rem}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:5px 14px;border-radius:8px;font-size:13px;font-weight:500}
+.sec{padding:3rem 0 1rem}
+.sh{display:flex;align-items:center;gap:14px;margin-bottom:.4rem}
+.sn{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
+.sl{flex:1;height:1px;background:var(--bd)}
+.sec-title{font-size:clamp(1.3rem,3vw,1.8rem);font-weight:700;margin-bottom:.3rem}
+.sec-sub{color:var(--tx2);font-size:13px;margin-bottom:1.8rem}
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:var(--sh)}
+.card-title{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+kbd{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg);border:1px solid var(--bd);border-bottom:2px solid var(--bd2);border-radius:5px;padding:2px 7px;color:var(--tx)}
+.code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:#1E293B;border:1px solid #334155;border-radius:10px;padding:14px 18px;color:#CBD5E1;margin:8px 0;line-height:1.9;overflow-x:auto;white-space:pre}
+.t{color:#7DD3FC}.a{color:#86EFAC}.v{color:#FCA5A5}.cm{color:#475569}.k{color:#C4B5FD}.fn{color:#FDE68A}.str{color:#FCA5A5}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+.info{border-radius:10px;padding:11px 15px;font-size:13.5px;margin:8px 0;line-height:1.6;display:flex;align-items:flex-start;gap:10px}
+.ic{flex-shrink:0;font-size:1.1rem;margin-top:1px}
+.info-o{background:var(--os);border:1px solid var(--bd2);color:#7C2D12}
+.info-g{background:var(--gs);border:1px solid #BBF7D0;color:#14532D}
+.info-b{background:var(--bs);border:1px solid #BFDBFE;color:#1E3A8A}
+.info-r{background:var(--rs);border:1px solid #FECACA;color:#7F1D1D}
+.js-box{background:var(--gs);border:2px solid var(--g);border-radius:12px;padding:14px 16px;margin:12px 0}
+.js-box-title{font-size:12px;font-weight:700;color:#15803D;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.js-box-body{font-size:13.5px;color:#14532D;line-height:1.7}
+.step-list{list-style:none}
+.step-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--bd)}
+.step-item:last-child{border-bottom:none}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--os2);border:1px solid var(--o3);color:var(--o2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body{flex:1}.st2{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px}.sd{font-size:12px;color:var(--tx2);line-height:1.6}
+.ws{background:linear-gradient(135deg,var(--os),var(--os2));border:2px solid var(--bd2);border-radius:16px;padding:1.5rem;margin:2rem 0}
+.ws-head{display:flex;align-items:center;gap:12px;margin-bottom:1rem}
+.ws-icon{font-size:1.5rem}
+.ws-title{font-size:1rem;font-weight:700}
+.ws-tasks{display:flex;flex-direction:column;gap:7px}
+.ws-task{background:#fff;border-radius:10px;padding:11px 14px;display:flex;align-items:flex-start;gap:11px;border:1px solid var(--bd)}
+.wl{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.lv1{background:#DCFCE7;color:#15803D;border:1px solid #86EFAC}
+.lv2{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+.lv3{background:#FDF4FF;color:#7E22CE;border:1px solid #E879F9}
+.wt{font-size:13px;line-height:1.6;color:var(--tx2)}.wt strong{color:var(--tx)}
+hr.hr{border:none;border-top:2px solid var(--bd);margin:3rem 0 0}
+/* DEMO */
+.demo{background:var(--os);border:2px solid var(--bd2);border-radius:14px;padding:1.2rem;margin:12px 0}
+.demo-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.tog-btn{padding:7px 18px;border-radius:8px;font-size:13px;font-weight:600;border:2px solid var(--o);background:var(--o);color:#fff;cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .2s;margin-right:8px}
+.tog-btn:hover{background:var(--o2)}
+.tog-btn.off{background:#fff;color:var(--o)}
+.preview{background:#fff;border-radius:10px;padding:14px;border:1px solid var(--bd);margin-top:10px;font-family:sans-serif}
+/* MENU DEMO */
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.menu-card{border-radius:10px;padding:12px;position:relative;border:1px solid #E5E7EB}
+.menu-card.avail{background:#fff}
+.menu-card.sold{background:#F9FAFB;opacity:.7}
+.menu-badge{position:absolute;top:-8px;right:-8px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.badge-new{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+.badge-sold{background:#FEE2E2;color:#7F1D1D;border:1px solid #FCA5A5}
+.badge-best{background:#DCFCE7;color:#14532D;border:1px solid #86EFAC}
+.menu-emoji{font-size:28px;margin-bottom:6px}
+.menu-name{font-size:13px;font-weight:600;color:#1A202C}
+.menu-price{font-size:12px;color:#F97316;font-weight:700;margin-top:3px}
+/* ARRAY VISUAL */
+.arr-visual{display:flex;gap:0;overflow-x:auto;margin:10px 0}
+.arr-item{border:2px solid var(--o3);background:#fff;padding:10px 14px;text-align:center;min-width:80px;flex-shrink:0}
+.arr-item:first-child{border-radius:8px 0 0 8px}
+.arr-item:last-child{border-radius:0 8px 8px 0}
+.arr-item+.arr-item{border-left:none}
+.arr-idx{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--tx3);margin-bottom:4px}
+.arr-val{font-size:13px;font-weight:600;color:var(--o2)}
+/* IF VISUAL */
+.if-flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:10px 0}
+.if-box{padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;text-align:center;min-width:160px}
+.if-cond{background:var(--bs);border:2px solid var(--b);color:var(--b)}
+.if-arrow{font-size:18px;color:var(--tx3);line-height:1;padding:4px 0}
+.if-yes{background:var(--gs);border:2px solid var(--g);color:#15803D}
+.if-no{background:var(--rs);border:2px solid var(--r);color:#7F1D1D}
+.if-row{display:flex;gap:20px;align-items:flex-start;justify-content:center}
+.if-branch{display:flex;flex-direction:column;align-items:center;gap:0}
+.if-branch-label{font-size:11px;font-weight:700;margin-bottom:4px}
+</style>
+</head>
+<body>
+<div id="rp"></div>
+<nav class="snav">
+  <a class="sni" href="#s1">🔀 v-if</a>
+  <span class="sep">›</span>
+  <a class="sni" href="#s2">⚖️ v-else + v-show</a>
+  <span class="sep">›</span>
+  <a class="sni" href="#s3">📋 Array + v-for</a>
+  <span class="sep">›</span>
+  <a class="sni" href="#s4">🔑 :key</a>
+  <span class="sep">›</span>
+  <a class="sni" href="#s5">🔗 รวมกัน</a>
+  <span class="sep">›</span>
+  <a class="sni" href="#s6">🛠 Workshop</a>
+</nav>
+
+<div class="page">
+<div class="hero">
+  <div class="wk-tag">🟠 WEEK 05</div>
+  <h1>v-if + <span>v-for</span></h1>
+  <p>แสดง/ซ่อน element ตามเงื่อนไข และ render รายการจาก array — สองทักษะที่ใช้ในทุก Vue project</p>
+  <div class="chips">
+    <span class="chip" style="background:var(--bs);color:var(--b);border:1px solid #BFDBFE">🔀 v-if / v-else / v-show</span>
+    <span class="chip" style="background:var(--gs);color:#15803D;border:1px solid #BBF7D0">⚡ JS: boolean, condition, array</span>
+    <span class="chip" style="background:var(--os);color:var(--o2);border:1px solid var(--bd2)">🔁 v-for + :key</span>
+    <span class="chip" style="background:#FEF3C7;color:#92400E;border:1px solid #FCD34D">🎯 ชิ้นงาน: เมนูร้านอาหาร</span>
+  </div>
+</div>
+
+<!-- S1: v-if -->
+<div class="sec" id="s1">
+  <div class="sh"><span class="sn" style="color:var(--o)">01</span><div class="sl"></div></div>
+  <h2 class="sec-title" style="color:var(--o2)">v-if — แสดงเมื่อเงื่อนไขเป็นจริง</h2>
+  <p class="sec-sub">ควบคุมว่า element จะปรากฏบนหน้าจอหรือไม่</p>
+
+  <div class="js-box">
+    <div class="js-box-title">⚡ JS Concept — Boolean และ Condition</div>
+    <div class="js-box-body">
+      <b>Boolean</b> = ค่า true หรือ false เท่านั้น — ใช้ตัดสินใจว่า "ใช่" หรือ "ไม่ใช่"<br><br>
+      <div class="code" style="font-size:12px;margin:6px 0"><span class="k">const</span> <span class="fn">isOpen</span>  = <span class="k">true</span>   <span class="cm">// ร้านเปิดอยู่</span>
+<span class="k">const</span> <span class="fn">isSoldOut</span> = <span class="k">false</span>  <span class="cm">// ยังไม่หมด</span>
+<span class="k">const</span> <span class="fn">stock</span> = <span class="v">5</span>
+<span class="cm">// เปรียบเทียบ → ได้ boolean</span>
+stock > <span class="v">0</span>   <span class="cm">// true</span>
+stock === <span class="v">0</span>  <span class="cm">// false</span>
+stock !== <span class="v">0</span>  <span class="cm">// true</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔀 v-if ทำงานอย่างไร</div>
+    <div class="if-flow" style="margin:14px 0">
+      <div class="if-box if-cond">เงื่อนไข: isOpen === true ?</div>
+      <div class="if-arrow">↓</div>
+      <div class="if-row">
+        <div class="if-branch">
+          <div class="if-branch-label" style="color:#15803D">✅ true</div>
+          <div class="if-box if-yes">แสดง element</div>
+        </div>
+        <div style="font-size:22px;color:var(--tx3);align-self:center">|</div>
+        <div class="if-branch">
+          <div class="if-branch-label" style="color:#7F1D1D">❌ false</div>
+          <div class="if-box if-no">ไม่แสดง (ลบออกจาก DOM)</div>
+        </div>
+      </div>
+    </div>
+    <div class="two">
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">โค้ด</div>
+        <div class="code"><span class="cm">&lt;!-- ใน script setup --&gt;</span>
+<span class="k">const</span> <span class="fn">isOpen</span> = <span class="fn">ref</span>(<span class="k">true</span>)
+
+<span class="cm">&lt;!-- ใน template --&gt;</span>
+<span class="t">&lt;p</span> <span class="a">v-if</span>=<span class="v">"isOpen"</span><span class="t">&gt;</span>
+  ✅ ร้านเปิดอยู่
+<span class="t">&lt;/p&gt;</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">ลอง toggle ดู</div>
+        <div class="demo">
+          <div class="demo-label">isOpen =</div>
+          <button class="tog-btn" id="btn-vif" onclick="toggleVif()">true</button>
+          <div class="preview" id="prev-vif">
+            <p style="color:#15803D;font-weight:600">✅ ร้านเปิดอยู่</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ Comparison operators — ใช้บ่อยใน v-if</div>
+    <div class="code"><span class="cm">// ใช้ใน v-if ได้โดยตรง</span>
+<span class="t">&lt;span</span> <span class="a">v-if</span>=<span class="v">"price > 100"</span><span class="t">&gt;</span>แพง<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span</span> <span class="a">v-if</span>=<span class="v">"name === 'Admin'"</span><span class="t">&gt;</span>สวัสดีแอดมิน<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span</span> <span class="a">v-if</span>=<span class="v">"stock !== 0"</span><span class="t">&gt;</span>มีสินค้า<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span</span> <span class="a">v-if</span>=<span class="v">"!isSoldOut"</span><span class="t">&gt;</span>ยังไม่หมด<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span</span> <span class="a">v-if</span>=<span class="v">"isOpen && stock > 0"</span><span class="t">&gt;</span>สั่งได้เลย<span class="t">&lt;/span&gt;</span></div>
+    <div class="info info-o"><span class="ic">💡</span><span><b>! (not)</b> = กลับค่า true→false, false→true &nbsp;|&nbsp; <b>&amp;&amp; (and)</b> = ทั้งคู่ต้องจริง &nbsp;|&nbsp; <b>|| (or)</b> = อย่างน้อยหนึ่งอันจริง</span></div>
+  </div>
+</div>
+
+<hr class="hr">
+
+<!-- S2: v-else + v-show -->
+<div class="sec" id="s2">
+  <div class="sh"><span class="sn" style="color:var(--b)">02</span><div class="sl"></div></div>
+  <h2 class="sec-title" style="color:var(--b)">v-else + v-else-if + v-show</h2>
+  <p class="sec-sub">แยกแสดงเนื้อหาตามเงื่อนไขหลายกรณี</p>
+
+  <div class="card">
+    <div class="card-title">🔀 v-if / v-else-if / v-else</div>
+    <div class="two">
+      <div class="code"><span class="cm">&lt;!-- เหมือน if / else if / else --&gt;</span>
+<span class="t">&lt;div</span> <span class="a">v-if</span>=<span class="v">"score >= 80"</span><span class="t">&gt;</span>
+  🏆 ยอดเยี่ยม
+<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div</span> <span class="a">v-else-if</span>=<span class="v">"score >= 60"</span><span class="t">&gt;</span>
+  ✅ ผ่าน
+<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div</span> <span class="a">v-else</span><span class="t">&gt;</span>
+  ❌ ไม่ผ่าน
+<span class="t">&lt;/div&gt;</span></div>
+      <div>
+        <div class="demo">
+          <div class="demo-label">คะแนน (ลากปรับ)</div>
+          <input type="range" id="score-range" min="0" max="100" value="75" oninput="updateScore(this.value)" style="width:100%;margin:8px 0">
+          <div style="font-size:13px;color:var(--tx2);margin-bottom:8px">score = <b id="score-val">75</b></div>
+          <div class="preview" id="score-result" style="font-size:15px;font-weight:600;text-align:center;padding:16px">✅ ผ่าน</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👁 v-show — ซ่อนแต่ยังอยู่ใน DOM</div>
+    <div class="two">
+      <div>
+        <div class="code"><span class="cm">&lt;!-- v-if: ลบออกจาก DOM --&gt;</span>
+<span class="t">&lt;p</span> <span class="a">v-if</span>=<span class="v">"show"</span><span class="t">&gt;</span>ข้อความ<span class="t">&lt;/p&gt;</span>
+
+<span class="cm">&lt;!-- v-show: display:none แทน --&gt;</span>
+<span class="t">&lt;p</span> <span class="a">v-show</span>=<span class="v">"show"</span><span class="t">&gt;</span>ข้อความ<span class="t">&lt;/p&gt;</span></div>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:14px;border:1px solid var(--bd)">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px">เมื่อไหร่ใช้อะไร?</div>
+        <div style="font-size:13px;color:var(--tx2);line-height:1.8">
+          <b style="color:var(--tx)">v-if</b> — ซ่อนนานๆ หรือเนื้อหาหนัก<br>
+          → toggle ไม่บ่อย<br><br>
+          <b style="color:var(--tx)">v-show</b> — toggle บ่อยๆ<br>
+          → เช่น dropdown, accordion
+        </div>
+      </div>
+    </div>
+    <div class="info info-b" style="margin-top:6px"><span class="ic">💡</span><span>สำหรับผู้เรียน: ใช้ <b>v-if</b> ไปก่อนได้เลย — v-show ค่อยใช้เมื่อเจอ performance issue</span></div>
+  </div>
+</div>
+
+<hr class="hr">
+
+<!-- S3: Array + v-for -->
+<div class="sec" id="s3">
+  <div class="sh"><span class="sn" style="color:var(--g)">03</span><div class="sl"></div></div>
+  <h2 class="sec-title" style="color:#15803D">Array + v-for — render รายการ</h2>
+  <p class="sec-sub">เก็บข้อมูลหลายชิ้นใน array แล้ว render ออกมาทีเดียว</p>
+
+  <div class="js-box">
+    <div class="js-box-title">⚡ JS Concept — Array คืออะไร</div>
+    <div class="js-box-body">
+      <b>Array</b> = กล่องที่เก็บข้อมูลได้หลายชิ้น เรียงกันตามลำดับ แต่ละชิ้นมี <b>index</b> เริ่มจาก 0<br><br>
+      <div class="arr-visual">
+        <div class="arr-item"><div class="arr-idx">[0]</div><div class="arr-val">'ลาเต้'</div></div>
+        <div class="arr-item"><div class="arr-idx">[1]</div><div class="arr-val">'อเมริกาโน่'</div></div>
+        <div class="arr-item"><div class="arr-idx">[2]</div><div class="arr-val">'มัทฉะ'</div></div>
+        <div class="arr-item"><div class="arr-idx">[3]</div><div class="arr-val">'โกโก้'</div></div>
+      </div>
+      <div class="code" style="font-size:12px;margin:6px 0"><span class="cm">// ประกาศ array</span>
+<span class="k">const</span> <span class="fn">menus</span> = <span class="fn">ref</span>([<span class="str">'ลาเต้'</span>, <span class="str">'อเมริกาโน่'</span>, <span class="str">'มัทฉะ'</span>])
+<span class="cm">// เพิ่ม item</span>
+menus.value.<span class="fn">push</span>(<span class="str">'โกโก้'</span>)
+<span class="cm">// ดูจำนวน</span>
+menus.value.<span class="fn">length</span>  <span class="cm">// 4</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔁 v-for — loop ผ่านทุก item</div>
+    <div class="two">
+      <div>
+        <div class="code"><span class="cm">&lt;!-- ใน script --&gt;</span>
+<span class="k">const</span> <span class="fn">menus</span> = <span class="fn">ref</span>([
+  <span class="str">'☕ ลาเต้'</span>,
+  <span class="str">'☕ อเมริกาโน่'</span>,
+  <span class="str">'🍵 มัทฉะ'</span>,
+])
+
+<span class="cm">&lt;!-- ใน template --&gt;</span>
+<span class="t">&lt;ul&gt;</span>
+  <span class="t">&lt;li</span> <span class="a">v-for</span>=<span class="v">"menu in menus"</span>
+      <span class="a">:key</span>=<span class="v">"menu"</span><span class="t">&gt;</span>
+    {{ menu }}
+  <span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ul&gt;</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">ผลลัพธ์</div>
+        <div class="preview">
+          <ul style="list-style:none;font-family:sans-serif;display:flex;flex-direction:column;gap:6px">
+            <li style="background:#FFF3E8;padding:8px 12px;border-radius:7px;font-size:14px">☕ ลาเต้</li>
+            <li style="background:#FFF3E8;padding:8px 12px;border-radius:7px;font-size:14px">☕ อเมริกาโน่</li>
+            <li style="background:#FFF3E8;padding:8px 12px;border-radius:7px;font-size:14px">🍵 มัทฉะ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📦 v-for กับ Array of Objects — ใช้บ่อยมากที่สุด</div>
+    <div class="two">
+      <div>
+        <div class="code"><span class="k">const</span> <span class="fn">menus</span> = <span class="fn">ref</span>([
+  {
+    <span class="a">name</span>: <span class="str">'ลาเต้'</span>,
+    <span class="a">price</span>: <span class="v">80</span>,
+    <span class="a">available</span>: <span class="k">true</span>
+  },
+  {
+    <span class="a">name</span>: <span class="str">'มัทฉะ'</span>,
+    <span class="a">price</span>: <span class="v">90</span>,
+    <span class="a">available</span>: <span class="k">false</span>
+  },
+])
+
+<span class="t">&lt;div</span> <span class="a">v-for</span>=<span class="v">"item in menus"</span>
+     <span class="a">:key</span>=<span class="v">"item.name"</span><span class="t">&gt;</span>
+  {{ item.name }} - {{ item.price }}฿
+<span class="t">&lt;/div&gt;</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">ผลลัพธ์</div>
+        <div class="preview">
+          <div style="font-family:sans-serif;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;background:#FFF3E8;padding:10px 14px;border-radius:8px">
+              <span style="font-size:14px">☕ ลาเต้</span>
+              <span style="font-size:13px;font-weight:700;color:#EA580C">80฿</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;background:#F9FAFB;padding:10px 14px;border-radius:8px;opacity:.6">
+              <span style="font-size:14px">🍵 มัทฉะ</span>
+              <span style="font-size:13px;font-weight:700;color:#EA580C">90฿</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="hr">
+
+<!-- S4: :key -->
+<div class="sec" id="s4">
+  <div class="sh"><span class="sn" style="color:var(--pu)">04</span><div class="sl"></div></div>
+  <h2 class="sec-title" style="color:var(--pu)">:key — ทำไมต้องมี</h2>
+  <p class="sec-sub">บอก Vue ว่าแต่ละ item ใน list คือตัวไหน</p>
+
+  <div class="card">
+    <div class="card-title">🔑 :key ช่วยอะไร?</div>
+    <div class="info info-b"><span class="ic">💡</span><span>Vue ใช้ :key เพื่อ track ว่าแต่ละ item คือตัวไหน เมื่อ array เปลี่ยน Vue จะ update เฉพาะส่วนที่เปลี่ยนโดยไม่ต้อง re-render ทั้งหมด</span></div>
+    <div class="code"><span class="cm">❌ ไม่มี :key — Vue สับสน</span>
+<span class="t">&lt;li</span> <span class="a">v-for</span>=<span class="v">"item in items"</span><span class="t">&gt;</span>{{ item }}<span class="t">&lt;/li&gt;</span>
+
+<span class="cm">✅ มี :key — Vue รู้ว่าแต่ละตัวคือใคร</span>
+<span class="t">&lt;li</span> <span class="a">v-for</span>=<span class="v">"item in items"</span>
+    <span class="a">:key</span>=<span class="v">"item.id"</span><span class="t">&gt;</span>{{ item.name }}<span class="t">&lt;/li&gt;</span></div>
+    <div class="info info-o" style="margin-top:6px"><span class="ic">⚠️</span><span>:key ต้องเป็นค่า <b>unique ไม่ซ้ำกัน</b> ในแต่ละ list — ใช้ id หรือ name ที่ไม่ซ้ำ อย่าใช้ index ถ้า list อาจเรียงใหม่</span></div>
+  </div>
+</div>
+
+<hr class="hr">
+
+<!-- S5: v-for + v-if ร่วมกัน -->
+<div class="sec" id="s5">
+  <div class="sh"><span class="sn" style="color:var(--o)">05</span><div class="sl"></div></div>
+  <h2 class="sec-title" style="color:var(--o2)">v-for + v-if รวมกัน — สูตรทำงานจริง</h2>
+  <p class="sec-sub">แสดงรายการและควบคุมแต่ละ item ด้วยเงื่อนไข</p>
+
+  <div class="card">
+    <div class="card-title">🍽 ตัวอย่างจริง — เมนูร้านกาแฟ</div>
+    <div class="two">
+      <div>
+        <div class="code" style="font-size:12px"><span class="k">const</span> <span class="fn">menus</span> = <span class="fn">ref</span>([
+  { <span class="a">id</span>:<span class="v">1</span>, <span class="a">name</span>:<span class="str">'ลาเต้'</span>, <span class="a">price</span>:<span class="v">80</span>,
+    <span class="a">available</span>:<span class="k">true</span>,  <span class="a">isBest</span>:<span class="k">true</span> },
+  { <span class="a">id</span>:<span class="v">2</span>, <span class="a">name</span>:<span class="str">'มัทฉะ'</span>, <span class="a">price</span>:<span class="v">95</span>,
+    <span class="a">available</span>:<span class="k">false</span>, <span class="a">isBest</span>:<span class="k">false</span> },
+  { <span class="a">id</span>:<span class="v">3</span>, <span class="a">name</span>:<span class="str">'โกโก้'</span>, <span class="a">price</span>:<span class="v">75</span>,
+    <span class="a">available</span>:<span class="k">true</span>,  <span class="a">isBest</span>:<span class="k">false</span> },
+])
+
+<span class="t">&lt;div</span> <span class="a">v-for</span>=<span class="v">"item in menus"</span>
+     <span class="a">:key</span>=<span class="v">"item.id"</span>
+     <span class="a">class</span>=<span class="v">"menu-card"</span><span class="t">&gt;</span>
+  <span class="cm">&lt;!-- badge ขายหมด --&gt;</span>
+  <span class="t">&lt;span</span> <span class="a">v-if</span>=<span class="v">"!item.available"</span>
+        <span class="a">class</span>=<span class="v">"badge-sold"</span><span class="t">&gt;</span>
+    ขายหมด
+  <span class="t">&lt;/span&gt;</span>
+  <span class="cm">&lt;!-- badge bestseller --&gt;</span>
+  <span class="t">&lt;span</span> <span class="a">v-if</span>=<span class="v">"item.isBest"</span>
+        <span class="a">class</span>=<span class="v">"badge-best"</span><span class="t">&gt;</span>
+    ⭐ ขายดี
+  <span class="t">&lt;/span&gt;</span>
+  <div>{{ item.name }} {{ item.price }}฿</div>
+<span class="t">&lt;/div&gt;</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--tx3);margin-bottom:6px">ผลลัพธ์</div>
+        <div class="preview">
+          <div class="menu-grid">
+            <div class="menu-card avail" style="border:1px solid #E5E7EB">
+              <span class="menu-badge badge-best">⭐ ขายดี</span>
+              <div class="menu-emoji">☕</div>
+              <div class="menu-name">ลาเต้</div>
+              <div class="menu-price">80฿</div>
+            </div>
+            <div class="menu-card sold" style="border:1px solid #E5E7EB">
+              <span class="menu-badge badge-sold">ขายหมด</span>
+              <div class="menu-emoji">🍵</div>
+              <div class="menu-name">มัทฉะ</div>
+              <div class="menu-price">95฿</div>
+            </div>
+            <div class="menu-card avail" style="border:1px solid #E5E7EB">
+              <div class="menu-emoji">🍫</div>
+              <div class="menu-name">โกโก้</div>
+              <div class="menu-price">75฿</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="info info-o" style="margin-top:6px"><span class="ic">⚠️</span><span>อย่าใช้ <b>v-if และ v-for บน element เดียวกัน</b> — Vue 3 ห้ามทำ ให้ใช้ <code style="background:var(--os2);padding:1px 5px;border-radius:3px">&lt;template v-for&gt;</code> แล้วค่อยใส่ v-if ข้างใน</span></div>
+  </div>
+</div>
+
+<hr class="hr">
+
+<!-- S6: Workshop -->
+<div class="sec" id="s6">
+  <div class="sh"><span class="sn" style="color:var(--o)">06</span><div class="sl"></div></div>
+  <h2 class="sec-title" style="color:var(--o2)">Workshop</h2>
+  <p class="sec-sub">ฝึกทำก่อนส่งชิ้นงาน</p>
+
+  <div class="ws">
+    <div class="ws-head">
+      <div class="ws-icon">🛠</div>
+      <div><div class="ws-title">Workshop — หน้าเมนูร้านอาหาร</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--tx2);margin-bottom:1rem;line-height:1.7">สร้าง <strong>App.vue</strong> ที่มี array ของเมนูอย่างน้อย 4 รายการ แล้ว render ด้วย v-for และใช้ v-if แสดง badge ตามเงื่อนไข</p>
+    <div class="ws-tasks">
+      <div class="ws-task">
+        <div class="wl lv1">1</div>
+        <div class="wt"><strong>พื้นฐาน:</strong> สร้าง array ของเมนู (name, price, available) และแสดงด้วย <code style="color:#15803D;background:#DCFCE7;padding:1px 5px;border-radius:3px">v-for</code> — ถ้า available = false ให้แสดงข้อความ "หมดแล้ว" ด้วย v-if</div>
+      </div>
+      <div class="ws-task">
+        <div class="wl lv2">2</div>
+        <div class="wt"><strong>กลาง:</strong> เพิ่ม field <code>category</code> (เครื่องดื่ม/ของหวาน) และ <code>isBestseller</code> — แสดง badge ด้วย v-if ให้ถูกต้องตาม field นั้น</div>
+      </div>
+      <div class="ws-task">
+        <div class="wl lv3">3</div>
+        <div class="wt"><strong>ท้าทาย:</strong> เพิ่มปุ่ม filter (ทั้งหมด / เครื่องดื่ม / ของหวาน) — เมื่อกดให้แสดงเฉพาะ category นั้น และแสดงจำนวนรายการที่กรองได้</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,var(--os),#FFFBEB);border:2px solid var(--bd2);border-radius:16px;padding:1.5rem">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:12px;font-family:'JetBrains Mono',monospace">สรุป Week 5</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+      <div style="background:#fff;border:1px solid var(--bd);border-radius:10px;padding:12px">
+        <div style="color:var(--o2);font-weight:600;font-size:13px;margin-bottom:4px">✓ v-if / v-else</div>
+        <div style="font-size:12px;color:var(--tx2)">boolean, conditions, &&, ||, !</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--bd);border-radius:10px;padding:12px">
+        <div style="color:#15803D;font-weight:600;font-size:13px;margin-bottom:4px">✓ Array + v-for</div>
+        <div style="font-size:12px;color:var(--tx2)">array of objects, .push(), v-for, :key</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--bd);border-radius:10px;padding:12px">
+        <div style="color:var(--b);font-weight:600;font-size:13px;margin-bottom:4px">✓ รวมกัน</div>
+        <div style="font-size:12px;color:var(--tx2)">v-for + v-if badge, v-show</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bd);font-size:13px;color:var(--tx2)">
+      <strong style="color:var(--o2)">Week 6 →</strong> @click + methods — JS: function, arrow function
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('rp').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){document.querySelectorAll('.sni').forEach(a=>a.classList.remove('active'));const l=document.querySelector(`.sni[href="#${x.target.id}"]`);if(l)l.classList.add('active')}})},{threshold:.25});
+document.querySelectorAll('.sec').forEach(s=>obs.observe(s));
+
+let vifState=true;
+function toggleVif(){
+  vifState=!vifState;
+  const btn=document.getElementById('btn-vif');
+  const prev=document.getElementById('prev-vif');
+  btn.textContent=vifState?'true':'false';
+  btn.className='tog-btn'+(vifState?'':' off');
+  prev.innerHTML=vifState?'<p style="color:#15803D;font-weight:600">✅ ร้านเปิดอยู่</p>':'<p style="color:#9CA3AF;font-size:13px">— ไม่มีอะไรแสดง (element ถูกลบออกจาก DOM) —</p>';
+}
+
+function updateScore(val){
+  document.getElementById('score-val').textContent=val;
+  const el=document.getElementById('score-result');
+  const v=parseInt(val);
+  if(v>=80)el.innerHTML='<span style="color:#15803D">🏆 ยอดเยี่ยม</span>';
+  else if(v>=60)el.innerHTML='<span style="color:#F97316">✅ ผ่าน</span>';
+  else el.innerHTML='<span style="color:#EF4444">❌ ไม่ผ่าน</span>';
+}
+</script>
+</body>
+</html>

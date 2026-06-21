@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Week 5 — ชิ้นงาน: เมนูร้านอาหาร</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--o:#F97316;--o2:#EA580C;--o3:#FB923C;--os:#FFF3E8;--os2:#FFE8D0;--bd:#FFE4CC;--bd2:#FFC899;--g:#22C55E;--gs:#F0FDF4;--b:#3B82F6;--bs:#EFF6FF;--pu:#A855F7;--ps:#F3E8FF;--tx:#1A1A1A;--tx2:#555;--tx3:#999;--sh:0 2px 12px rgba(249,115,22,.1)}
+body{background:#FAFAFA;color:var(--tx);font-family:'Sarabun',sans-serif;font-size:15px;line-height:1.7;padding:28px 16px 60px}
+.page{max-width:860px;margin:0 auto}
+h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.meta{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:600;padding:3px 11px;border-radius:20px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:20px 22px;margin-bottom:18px;box-shadow:var(--sh)}
+.card-title{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+code{font-family:'JetBrains Mono',monospace;font-size:11px;background:#F1F5F9;padding:1px 5px;border-radius:3px;color:#475569}
+.code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:#1E293B;border-radius:10px;padding:14px 18px;color:#CBD5E1;margin:8px 0;line-height:1.9;overflow-x:auto;white-space:pre}
+.t{color:#7DD3FC}.a{color:#86EFAC}.v{color:#FCA5A5}.cm{color:#475569}.k{color:#C4B5FD}.fn{color:#FDE68A}.str{color:#FCA5A5}
+.info{border-radius:10px;padding:10px 14px;font-size:13px;margin:8px 0;line-height:1.6;display:flex;gap:10px}
+.info-o{background:var(--os);border:1px solid var(--bd2);color:#7C2D12}
+.info-g{background:var(--gs);border:1px solid #BBF7D0;color:#14532D}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:680px){.levels{grid-template-columns:1fr}}
+.lv-card{border-radius:14px;overflow:hidden;border:1px solid var(--bd)}
+.lv-hdr{padding:13px 16px}
+.lv-num{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.lv-title{font-size:14px;font-weight:700}
+.lv-body{background:#fff;padding:14px 16px}
+.lv-desc{font-size:13px;color:var(--tx2);margin-bottom:10px;line-height:1.6}
+.req-list{list-style:none}
+.req-item{font-size:12px;color:var(--tx2);padding:4px 0;border-bottom:1px solid #F1F5F9;display:flex;gap:7px}
+.req-item:last-child{border-bottom:none}
+.req-item::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.rb1::before{background:var(--g)}.rb2::before{background:var(--o)}.rb3::before{background:var(--pu)}
+.prev-wrap{border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.prev-hdr{background:#F1F5F9;padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace}
+.tab-btns{display:flex;gap:6px}
+.tb{font-size:11px;padding:3px 11px;border-radius:20px;cursor:pointer;border:1px solid var(--bd);background:transparent;color:var(--tx3);font-family:'Sarabun',sans-serif;transition:all .15s}
+.tb.a1{border-color:var(--g);color:var(--g);background:var(--gs)}
+.tb.a2{border-color:var(--o);color:var(--o);background:var(--os)}
+.tb.a3{border-color:var(--pu);color:var(--pu);background:var(--ps)}
+.sec-title{font-size:17px;font-weight:700;margin:26px 0 12px;color:var(--o2)}
+.tips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:580px){.tips{grid-template-columns:1fr}}
+.tip-card{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:13px}
+.tip-title{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.tip-body{font-size:12px;color:var(--tx2);line-height:1.7}
+.rubric-table{width:100%;border-collapse:collapse}
+.rubric-table th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);padding:8px 12px;border-bottom:2px solid var(--bd)}
+.rubric-table td{padding:9px 12px;border-bottom:1px solid #F1F5F9;font-size:13px}
+.rubric-table tr:last-child td{border-bottom:none}
+.rubric-table tr:hover td{background:var(--os)}
+.pts{font-weight:700;color:var(--o2)}
+.copy-btn{font-size:11px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);background:var(--os);color:var(--o2);cursor:pointer;font-family:'Sarabun',sans-serif}
+kbd{font-family:'JetBrains Mono',monospace;font-size:11px;background:#F1F5F9;border:1px solid #E2E8F0;border-bottom:2px solid #CBD5E1;border-radius:4px;padding:2px 6px;color:#475569}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="meta">
+  <span class="badge" style="background:var(--os);color:var(--o2);border:1px solid var(--bd2)">Week 5</span>
+  <span class="badge" style="background:var(--gs);color:#15803D;border:1px solid #BBF7D0">v-if + v-for</span>
+  <span class="badge" style="background:var(--bs);color:#1E40AF;border:1px solid #BFDBFE">⏱ 1–1.5 ชั่วโมง</span>
+  <span class="badge" style="background:var(--ps);color:#6B21A8;border:1px solid #DDD6FE">👤 เดี่ยว</span>
+</div>
+
+<h1>ชิ้นงาน: หน้าเมนูร้านอาหาร</h1>
+<p style="font-size:13px;color:var(--tx2);margin-bottom:22px">ใช้ <strong>v-for</strong> แสดงรายการเมนูจาก array และ <strong>v-if</strong> แสดง badge ต่างๆ ตามเงื่อนไขของแต่ละเมนู</p>
+
+<!-- โจทย์ -->
+<div class="card">
+  <div class="card-title">📋 โจทย์</div>
+  <p style="font-size:14px;color:var(--tx2);line-height:1.8;margin-bottom:10px">สร้างหน้าเว็บร้านอาหารที่มี <strong>array ของเมนู</strong> — แต่ละเมนูมี property ของตัวเอง แล้วแสดงผลด้วย v-for พร้อม badge ต่างๆ ด้วย v-if</p>
+  <div class="info info-o"><span>⚠️</span><span>ข้อมูลเมนูทั้งหมดต้องอยู่ใน <code>ref([])</code> ใน script — <strong>ห้าม hardcode ชื่อเมนูตรงๆ ใน template</strong></span></div>
+</div>
+
+<!-- 3 ระดับ -->
+<div class="sec-title">⭐ เลือกระดับ</div>
+<div class="levels">
+  <div class="lv-card">
+    <div class="lv-hdr" style="background:var(--gs)">
+      <div class="lv-num" style="color:var(--g)">ระดับ 1 · พื้นฐาน</div>
+      <div class="lv-title">รายการเมนูง่ายๆ</div>
+    </div>
+    <div class="lv-body">
+      <div class="lv-desc">แสดงเมนูจาก array พร้อมบอกว่าหมดหรือไม่</div>
+      <ul class="req-list">
+        <li class="req-item rb1">array เมนูอย่างน้อย 4 รายการ</li>
+        <li class="req-item rb1">แต่ละเมนูมี name, price, available</li>
+        <li class="req-item rb1">v-for แสดงทุกเมนู มี :key</li>
+        <li class="req-item rb1">v-if แสดงข้อความ "หมดแล้ว" ถ้า available = false</li>
+        <li class="req-item rb1">จัด layout ด้วย Tailwind</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lv-card">
+    <div class="lv-hdr" style="background:var(--os)">
+      <div class="lv-num" style="color:var(--o2)">ระดับ 2 · กลาง</div>
+      <div class="lv-title">Badge หลายแบบ</div>
+    </div>
+    <div class="lv-body">
+      <div class="lv-desc">ทุกอย่างของระดับ 1 + badge หลายประเภท</div>
+      <ul class="req-list">
+        <li class="req-item rb2">เพิ่ม field: category, isBestseller, isNew</li>
+        <li class="req-item rb2">badge "⭐ ขายดี" ถ้า isBestseller = true</li>
+        <li class="req-item rb2">badge "🆕 ใหม่" ถ้า isNew = true</li>
+        <li class="req-item rb2">badge "❌ หมด" ถ้า available = false</li>
+        <li class="req-item rb2">card ของเมนูที่หมดให้จางลง (opacity)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="lv-card">
+    <div class="lv-hdr" style="background:var(--ps)">
+      <div class="lv-num" style="color:#6B21A8">ระดับ 3 · ท้าทาย</div>
+      <div class="lv-title">Filter + สถิติ</div>
+    </div>
+    <div class="lv-body">
+      <div class="lv-desc">ทุกอย่างของระดับ 2 + filter เมนู</div>
+      <ul class="req-list">
+        <li class="req-item rb3">ปุ่ม filter: ทั้งหมด / เครื่องดื่ม / ของหวาน</li>
+        <li class="req-item rb3">v-if กรองแสดงเฉพาะ category ที่เลือก</li>
+        <li class="req-item rb3">แสดงจำนวนรายการที่กรองได้ ("3 รายการ")</li>
+        <li class="req-item rb3">ปุ่มที่เลือกอยู่มีสีต่างจากปุ่มอื่น (:class)</li>
+        <li class="req-item rb3">แสดงสถิติ: มีทั้งหมด / ขายดี / หมดแล้ว</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW -->
+<div class="sec-title">👁 Preview ตัวอย่าง</div>
+<div class="prev-wrap">
+  <div class="prev-hdr">
+    ตัวอย่างหน้าเมนูร้านอาหาร
+    <div class="tab-btns">
+      <button class="tb a1" onclick="showLv(1,this)">ระดับ 1</button>
+      <button class="tb" onclick="showLv(2,this)">ระดับ 2</button>
+      <button class="tb" onclick="showLv(3,this)">ระดับ 3</button>
+    </div>
+  </div>
+  <iframe id="pframe" srcdoc="" style="width:100%;height:400px;border:none;background:#f9fafb"></iframe>
+</div>
+
+<!-- STARTER -->
+<div class="sec-title">🚀 Starter Code</div>
+<div class="card">
+  <div class="info info-g" style="margin-bottom:12px"><span>💡</span><span>เปิด <kbd>src/App.vue</kbd> → ลบทุกอย่าง → วางโค้ดนี้ → แก้เนื้อหาตามที่ต้องการ</span></div>
+  <div style="position:relative">
+    <button class="copy-btn" style="position:absolute;top:10px;right:10px;z-index:10" onclick="copyCode()">📋 Copy</button>
+    <div class="code"><span class="t">&lt;template&gt;</span>
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"min-h-screen bg-orange-50 p-8"</span><span class="t">&gt;</span>
+    <span class="t">&lt;h1</span> <span class="a">class</span>=<span class="v">"text-3xl font-bold text-orange-800 mb-2"</span><span class="t">&gt;</span>☕ {{ shopName }}<span class="t">&lt;/h1&gt;</span>
+    <span class="t">&lt;p</span> <span class="a">class</span>=<span class="v">"text-orange-600 mb-8"</span><span class="t">&gt;</span>เมนูทั้งหมด {{ menus.length }} รายการ<span class="t">&lt;/p&gt;</span>
+
+    <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"grid grid-cols-2 gap-4 md:grid-cols-4"</span><span class="t">&gt;</span>
+      <span class="cm">&lt;!-- TODO: เพิ่ม v-for และ v-if ตรงนี้ --&gt;</span>
+      <span class="t">&lt;div</span> <span class="a">v-for</span>=<span class="v">"item in menus"</span>
+           <span class="a">:key</span>=<span class="v">"item.id"</span>
+           <span class="a">class</span>=<span class="v">"bg-white rounded-xl shadow p-4 relative"</span><span class="t">&gt;</span>
+
+        <span class="cm">&lt;!-- badge ถ้าหมด --&gt;</span>
+        <span class="t">&lt;span</span> <span class="a">v-if</span>=<span class="v">"!item.available"</span>
+              <span class="a">class</span>=<span class="v">"absolute -top-2 -right-2 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full border border-red-300"</span><span class="t">&gt;</span>
+          ❌ หมด
+        <span class="t">&lt;/span&gt;</span>
+
+        <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"text-3xl mb-2"</span><span class="t">&gt;</span>{{ item.emoji }}<span class="t">&lt;/div&gt;</span>
+        <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"font-semibold text-gray-800"</span><span class="t">&gt;</span>{{ item.name }}<span class="t">&lt;/div&gt;</span>
+        <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"text-orange-600 font-bold mt-1"</span><span class="t">&gt;</span>{{ item.price }}฿<span class="t">&lt;/div&gt;</span>
+      <span class="t">&lt;/div&gt;</span>
+    <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/template&gt;</span>
+
+<span class="t">&lt;script</span> <span class="a">setup</span><span class="t">&gt;</span>
+<span class="k">import</span> { <span class="fn">ref</span> } <span class="k">from</span> <span class="str">'vue'</span>
+
+<span class="k">const</span> <span class="fn">shopName</span> = <span class="fn">ref</span>(<span class="str">'ชื่อร้านของคุณ'</span>)
+
+<span class="k">const</span> <span class="fn">menus</span> = <span class="fn">ref</span>([
+  { <span class="a">id</span>:<span class="v">1</span>, <span class="a">name</span>:<span class="str">'ลาเต้'</span>,   <span class="a">emoji</span>:<span class="str">'☕'</span>, <span class="a">price</span>:<span class="v">80</span>,  <span class="a">available</span>:<span class="k">true</span>  },
+  { <span class="a">id</span>:<span class="v">2</span>, <span class="a">name</span>:<span class="str">'มัทฉะ'</span>,   <span class="a">emoji</span>:<span class="str">'🍵'</span>, <span class="a">price</span>:<span class="v">95</span>,  <span class="a">available</span>:<span class="k">false</span> },
+  { <span class="a">id</span>:<span class="v">3</span>, <span class="a">name</span>:<span class="str">'โกโก้'</span>,   <span class="a">emoji</span>:<span class="str">'🍫'</span>, <span class="a">price</span>:<span class="v">75</span>,  <span class="a">available</span>:<span class="k">true</span>  },
+  { <span class="a">id</span>:<span class="v">4</span>, <span class="a">name</span>:<span class="str">'เค้กช็อก'</span>, <span class="a">emoji</span>:<span class="str">'🍰'</span>, <span class="a">price</span>:<span class="v">85</span>,  <span class="a">available</span>:<span class="k">true</span>  },
+])
+<span class="t">&lt;/script&gt;</span></div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="sec-title">💡 Hints ที่อาจช่วยได้</div>
+<div class="tips">
+  <div class="tip-card">
+    <div class="tip-title">🏷 Badge styles</div>
+    <div class="tip-body">
+      ขายดี: <code>bg-yellow-100 text-yellow-800 border-yellow-300</code><br>
+      ใหม่: <code>bg-blue-100 text-blue-800 border-blue-300</code><br>
+      หมด: <code>bg-red-100 text-red-700 border-red-300</code>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-title">🔘 ปุ่ม filter active</div>
+    <div class="tip-body">
+      <code>:class="selected==='drink' ? 'bg-orange-500 text-white' : 'bg-white'"</code><br>
+      เมื่อกด: <code>selected = 'drink'</code>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-title">👁 Card จางเมื่อหมด</div>
+    <div class="tip-body">
+      <code>:class="!item.available ? 'opacity-50' : ''"</code><br>
+      หรือ <code>:class="{'opacity-50': !item.available}"</code>
+    </div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-title">📊 นับสถิติ (ระดับ 3)</div>
+    <div class="tip-body">
+      <code>menus.value.filter(m => m.isBestseller).length</code><br>
+      ใช้ใน computed หรือใน template ได้เลย
+    </div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="sec-title">📊 เกณฑ์คะแนน (100 คะแนน)</div>
+<div style="background:#fff;border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:var(--sh)">
+  <table class="rubric-table">
+    <thead><tr><th>หัวข้อ</th><th>รายละเอียด</th><th style="text-align:right">คะแนน</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:600">Array ใน ref()</td><td style="color:var(--tx2)">เมนูทั้งหมดอยู่ใน ref([]) ไม่ hardcode ใน template</td><td class="pts" style="text-align:right">25</td></tr>
+      <tr><td style="font-weight:600">v-for ถูกต้อง</td><td style="color:var(--tx2)">render ทุก item มี :key ไม่ซ้ำ แสดงผลถูกต้อง</td><td class="pts" style="text-align:right">30</td></tr>
+      <tr><td style="font-weight:600">v-if ถูกต้อง</td><td style="color:var(--tx2)">badge แสดง/ซ่อนตาม condition ถูกต้อง</td><td class="pts" style="text-align:right">25</td></tr>
+      <tr><td style="font-weight:600">หน้าตาสวยงาม</td><td style="color:var(--tx2)">Tailwind ใช้สอดคล้อง card มี spacing พอดี</td><td class="pts" style="text-align:right">20</td></tr>
+      <tr style="background:var(--os)"><td style="color:var(--o2);font-weight:700">Bonus — ระดับ 3</td><td style="color:var(--tx2)">Filter + active button + สถิติครบ</td><td class="pts" style="text-align:right;color:var(--o2)">+10</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SUBMIT -->
+<div class="sec-title">📤 ส่งงาน</div>
+<div style="background:var(--gs);border:1px solid #BBF7D0;border-radius:14px;padding:16px 18px">
+  <div style="font-size:13px;font-weight:600;color:#14532D;margin-bottom:8px">Push ขึ้น GitHub repo เดิม</div>
+  <div class="code" style="font-size:12px">git add .
+git commit -m <span class="str">"Week 5 menu page - [ชื่อตัวเอง]"</span>
+git push</div>
+</div>
+
+</div>
+
+<script>
+const MENUS=[
+  {id:1,name:'ลาเต้',emoji:'☕',price:80,available:true,isBestseller:true,isNew:false,category:'drink'},
+  {id:2,name:'มัทฉะ',emoji:'🍵',price:95,available:false,isBestseller:false,isNew:true,category:'drink'},
+  {id:3,name:'โกโก้',emoji:'🍫',price:75,available:true,isBestseller:false,isNew:false,category:'drink'},
+  {id:4,name:'เค้กช็อก',emoji:'🍰',price:85,available:true,isBestseller:true,isNew:false,category:'dessert'},
+  {id:5,name:'คุกกี้',emoji:'🍪',price:45,available:true,isBestseller:false,isNew:true,category:'dessert'},
+  {id:6,name:'อเมริกาโน่',emoji:'☕',price:70,available:false,isBestseller:false,isNew:false,category:'drink'},
+];
+function buildCard(m,level){
+  let badge='';
+  if(level>=1&&!m.available) badge+=`<span style="position:absolute;top:-8px;right:-8px;background:#FEE2E2;color:#7F1D1D;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid #FCA5A5">❌ หมด</span>`;
+  if(level>=2&&m.isBestseller) badge+=`<span style="position:absolute;top:-8px;left:-8px;background:#FEF3C7;color:#92400E;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid #FCD34D">⭐ ขายดี</span>`;
+  if(level>=2&&m.isNew) badge+=`<span style="display:inline-block;background:#DBEAFE;color:#1E40AF;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid #BFDBFE;margin-bottom:4px">🆕 ใหม่</span>`;
+  const op=!m.available?'opacity:.5':'';
+  return `<div style="background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:14px;position:relative;${op}">${badge}<div style="font-size:26px;margin-bottom:6px">${m.emoji}</div><div style="font-weight:600;font-size:13px;color:#1A202C">${m.name}</div><div style="color:#EA580C;font-weight:700;font-size:12px;margin-top:3px">${m.price}฿</div></div>`;
+}
+
+const P1=`<body style="background:#FFF3E8;font-family:sans-serif;padding:20px;margin:0"><h2 style="font-size:18px;font-weight:700;color:#7C2D12;margin-bottom:4px">☕ Morning Brew</h2><p style="font-size:13px;color:#92400E;margin-bottom:16px">เมนูทั้งหมด ${MENUS.length} รายการ</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">${MENUS.map(m=>buildCard(m,1)).join('')}</div></body>`;
+const P2=`<body style="background:#FFF3E8;font-family:sans-serif;padding:20px;margin:0"><h2 style="font-size:18px;font-weight:700;color:#7C2D12;margin-bottom:4px">☕ Morning Brew</h2><p style="font-size:13px;color:#92400E;margin-bottom:16px">เมนูทั้งหมด ${MENUS.length} รายการ</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">${MENUS.map(m=>buildCard(m,2)).join('')}</div></body>`;
+
+let sel='all';
+function buildP3(){
+  const filtered=sel==='all'?MENUS:MENUS.filter(m=>m.category===sel);
+  const btns=['all','drink','dessert'].map(c=>{
+    const label=c==='all'?'ทั้งหมด':c==='drink'?'☕ เครื่องดื่ม':'🍰 ของหวาน';
+    const active=sel===c;
+    return `<button onclick="setSel('${c}')" style="padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:2px solid #F97316;background:${active?'#F97316':'white'};color:${active?'white':'#F97316'};cursor:pointer;font-family:sans-serif">${label}</button>`;
+  }).join('');
+  const stats=`<div style="display:flex;gap:12px;font-size:12px;color:#92400E;margin-bottom:12px"><span>📋 ทั้งหมด <b>${MENUS.length}</b></span><span>⭐ ขายดี <b>${MENUS.filter(m=>m.isBestseller).length}</b></span><span>❌ หมด <b>${MENUS.filter(m=>!m.available).length}</b></span></div>`;
+  return `<body style="background:#FFF3E8;font-family:sans-serif;padding:20px;margin:0"><h2 style="font-size:18px;font-weight:700;color:#7C2D12;margin-bottom:4px">☕ Morning Brew</h2>${stats}<div style="display:flex;gap:8px;margin-bottom:14px">${btns}</div><p style="font-size:12px;color:#92400E;margin-bottom:12px">แสดง ${filtered.length} รายการ</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">${filtered.map(m=>buildCard(m,2)).join('')}</div></body>`;
+}
+function setSel(c){sel=c;document.getElementById('pframe').srcdoc=buildP3();}
+window.setSel=setSel;
+
+function showLv(n,btn){
+  document.querySelectorAll('.tb').forEach(b=>b.className='tb');
+  btn.className='tb a'+n;
+  if(n===1)document.getElementById('pframe').srcdoc=P1;
+  else if(n===2)document.getElementById('pframe').srcdoc=P2;
+  else document.getElementById('pframe').srcdoc=buildP3();
+}
+showLv(1,document.querySelector('.tb'));
+
+function copyCode(){
+  const raw=`<template>
+  <div class="min-h-screen bg-orange-50 p-8">
+    <h1 class="text-3xl font-bold text-orange-800 mb-2">☕ {{ shopName }}</h1>
+    <p class="text-orange-600 mb-8">เมนูทั้งหมด {{ menus.length }} รายการ</p>
+
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div v-for="item in menus"
+           :key="item.id"
+           class="bg-white rounded-xl shadow p-4 relative">
+
+        <span v-if="!item.available"
+              class="absolute -top-2 -right-2 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full border border-red-300">
+          ❌ หมด
+        </span>
+
+        <div class="text-3xl mb-2">{{ item.emoji }}</div>
+        <div class="font-semibold text-gray-800">{{ item.name }}</div>
+        <div class="text-orange-600 font-bold mt-1">{{ item.price }}฿</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const shopName = ref('ชื่อร้านของคุณ')
+
+const menus = ref([
+  { id:1, name:'ลาเต้',    emoji:'☕', price:80,  available:true  },
+  { id:2, name:'มัทฉะ',    emoji:'🍵', price:95,  available:false },
+  { id:3, name:'โกโก้',    emoji:'🍫', price:75,  available:true  },
+  { id:4, name:'เค้กช็อก', emoji:'🍰', price:85,  available:true  },
+])
+<\/script>`;
+  navigator.clipboard.writeText(raw).then(()=>{const b=event.target;b.textContent='✅ Copied!';setTimeout(()=>b.textContent='📋 Copy',2000);}).catch(()=>{});
+}
+</script>
+</body>
+</html>
