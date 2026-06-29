@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deploy Tutorial — Teaching Log</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sarabun', sans-serif; background: #f7f9f7; color: #111; }
+
+  .topbar { background: #0F6E56; padding: 0 2rem; height: 56px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  .topbar-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .topbar span { color: #fff; font-size: 16px; font-weight: 700; }
+  .topbar small { color: rgba(255,255,255,0.6); font-size: 13px; margin-left: 4px; }
+
+  .layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 56px); }
+
+  .sidebar { background: #fff; border-right: 1px solid #e5e7eb; padding: 1.25rem 0; position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; }
+  .sidebar-section { font-size: 11px; font-weight: 700; color: #9ca3af; letter-spacing: 1px; text-transform: uppercase; padding: 8px 1.25rem 4px; margin-top: 8px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 1.25rem; font-size: 14px; color: #4b5563; cursor: pointer; border-left: 3px solid transparent; transition: all .15s; }
+  .nav-item:hover { background: #f3f4f6; color: #111; }
+  .nav-item.active { background: #EAF3DE; color: #085041; border-left-color: #0F6E56; font-weight: 500; }
+  .nav-num { width: 22px; height: 22px; border-radius: 50%; background: #e5e7eb; color: #6b7280; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .nav-item.active .nav-num { background: #0F6E56; color: #fff; }
+  .nav-item.done .nav-num { background: #EAF3DE; color: #0F6E56; }
+  .nav-item.done .nav-num::after { content: '✓'; font-size: 11px; }
+  .nav-divider { height: 1px; background: #f3f4f6; margin: 6px 1.25rem; }
+
+  .content { padding: 2rem 2.5rem; max-width: 800px; }
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  .step-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
+  .step-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 12px; border-radius: 20px; margin-bottom: 10px; }
+  .badge-railway { background: #7000ff15; color: #7000ff; }
+  .badge-vercel { background: #00000015; color: #000; }
+  .badge-supabase { background: #3ecf8e15; color: #087849; }
+  .badge-git { background: #f0500015; color: #c63700; }
+  .badge-done { background: #EAF3DE; color: #085041; }
+  .step-header h1 { font-size: 22px; font-weight: 700; color: #085041; margin-bottom: 6px; }
+  .step-header p { font-size: 15px; color: #6b7280; }
+
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+  .card-label { font-size: 12px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+  pre { background: #1a1a1a; color: #d4d4d4; border-radius: 8px; padding: 1rem 1.25rem; font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace; overflow-x: auto; line-height: 1.7; margin: 0; }
+  .cm { color: #6a9955; }
+  .kw { color: #569cd6; }
+  .val { color: #ce9178; }
+  .key { color: #9cdcfe; }
+
+  .tip { background: #EAF3DE; border-left: 3px solid #0F6E56; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 14px; color: #085041; margin-bottom: 1rem; display: flex; gap: 10px; align-items: flex-start; }
+  .warn { background: #fff8ed; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 14px; color: #78350f; margin-bottom: 1rem; display: flex; gap: 10px; align-items: flex-start; }
+  .info { background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 14px; color: #1e40af; margin-bottom: 1rem; display: flex; gap: 10px; align-items: flex-start; }
+
+  .steps-list { display: flex; flex-direction: column; gap: 12px; }
+  .step-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; }
+  .step-circle { width: 30px; height: 30px; border-radius: 50%; background: #0F6E56; color: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-item h3 { font-size: 14px; font-weight: 600; color: #111; margin-bottom: 4px; }
+  .step-item p { font-size: 13px; color: #6b7280; line-height: 1.6; }
+  .step-item code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; color: #374151; }
+
+  .env-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .env-table th { background: #f9fafb; text-align: left; padding: 8px 12px; border: 1px solid #e5e7eb; font-weight: 600; color: #374151; }
+  .env-table td { padding: 8px 12px; border: 1px solid #e5e7eb; color: #4b5563; }
+  .env-table td:first-child { font-family: monospace; font-size: 12px; color: #0F6E56; font-weight: 600; background: #f9fafb; }
+  .env-table tr:hover td { background: #fafafa; }
+
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+  .check-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 14px; color: #374151; transition: all .15s; user-select: none; }
+  .check-item:hover { background: #f9fafb; }
+  .check-item.done { background: #f9fafb; color: #9ca3af; text-decoration: line-through; }
+  .check-box { width: 20px; height: 20px; border-radius: 5px; border: 2px solid #d1d5db; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .check-item.done .check-box { background: #0F6E56; border-color: #0F6E56; }
+  .check-item.done .check-box::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .flow-box { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; text-align: center; }
+  .flow-arrow { color: #9ca3af; font-size: 18px; }
+  .box-railway { background: #7000ff15; color: #7000ff; border: 1px solid #7000ff30; }
+  .box-vercel { background: #00000010; color: #000; border: 1px solid #00000020; }
+  .box-supabase { background: #3ecf8e15; color: #087849; border: 1px solid #3ecf8e30; }
+  .box-user { background: #EAF3DE; color: #085041; border: 1px solid #C0DD97; }
+
+  .done-card { background: #EAF3DE; border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 16px; margin-top: 1rem; }
+  .done-icon { width: 48px; height: 48px; border-radius: 50%; background: #0F6E56; color: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  .nav-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #d1d5db; background: #fff; color: #374151; font-family: 'Sarabun', sans-serif; }
+  .btn:hover { background: #f9fafb; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: #0F6E56; border-color: #0F6E56; color: #fff; }
+  .btn-primary:hover { background: #085041; }
+  .step-counter { font-size: 13px; color: #9ca3af; }
+
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+  .tag-required { background: #fef2f2; color: #b91c1c; }
+  .tag-optional { background: #f3f4f6; color: #6b7280; }
+
+  @media (max-width: 640px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .content { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-icon">🚀</div>
+  <span>Deploy Guide</span>
+  <small>Teaching Log — Railway + Vercel + Supabase</small>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">ภาพรวม</div>
+    <div class="nav-item active" onclick="goStep(1)" id="nav1"><div class="nav-num">1</div> Architecture</div>
+
+    <div class="nav-divider"></div>
+    <div class="sidebar-section">🟣 Railway (Backend)</div>
+    <div class="nav-item" onclick="goStep(2)" id="nav2"><div class="nav-num">2</div> สร้าง Project</div>
+    <div class="nav-item" onclick="goStep(3)" id="nav3"><div class="nav-num">3</div> ตั้ง Environment</div>
+    <div class="nav-item" onclick="goStep(4)" id="nav4"><div class="nav-num">4</div> Deploy Backend</div>
+
+    <div class="nav-divider"></div>
+    <div class="sidebar-section">⚫ Vercel (Frontend)</div>
+    <div class="nav-item" onclick="goStep(5)" id="nav5"><div class="nav-num">5</div> สร้าง Project</div>
+    <div class="nav-item" onclick="goStep(6)" id="nav6"><div class="nav-num">6</div> ตั้ง Environment</div>
+    <div class="nav-item" onclick="goStep(7)" id="nav7"><div class="nav-num">7</div> Deploy Frontend</div>
+
+    <div class="nav-divider"></div>
+    <div class="sidebar-section">✅ เสร็จสิ้น</div>
+    <div class="nav-item" onclick="goStep(8)" id="nav8"><div class="nav-num">8</div> ทดสอบระบบ</div>
+  </nav>
+
+  <main class="content">
+
+    <!-- STEP 1: Architecture -->
+    <div class="step-panel active" id="step1">
+      <div class="step-header">
+        <div class="step-badge badge-done">ภาพรวม</div>
+        <h1>Architecture การ Deploy</h1>
+        <p>ระบบแบ่งเป็น 3 ส่วน deploy แยกกัน</p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-box box-user">👤 User (Browser)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box box-vercel">⚫ Vercel<br><small>Frontend (Vue 3)</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box box-railway">🟣 Railway<br><small>Backend (Express)</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box box-supabase">🟢 Supabase<br><small>Database + Storage</small></div>
+      </div>
+
+      <div class="warn">
+        <span>⚠️</span>
+        <span><strong>ทำตามลำดับนี้เท่านั้น</strong> — Railway ก่อน เพราะต้องได้ URL ของ backend ไปใส่ใน Vercel</span>
+      </div>
+
+      <div class="card">
+        <div class="card-label">📋 สิ่งที่ต้องมีก่อนเริ่ม</div>
+        <div class="checklist">
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> บัญชี GitHub (และเป็น collaborator ของ repo แล้ว)</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> บัญชี Railway (railway.app) — สมัครฟรีด้วย GitHub</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> บัญชี Vercel (vercel.com) — สมัครฟรีด้วย GitHub</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> SUPABASE_URL และ SUPABASE_SERVICE_ROLE_KEY (ขอจาก bro)</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> JWT_SECRET (ขอจาก bro หรือสร้างเองก็ได้)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Railway Project -->
+    <div class="step-panel" id="step2">
+      <div class="step-header">
+        <div class="step-badge badge-railway">🟣 Railway</div>
+        <h1>สร้าง Project บน Railway</h1>
+        <p>เชื่อม GitHub repo กับ Railway เพื่อ deploy backend</p>
+      </div>
+
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-circle">1</div>
+          <div>
+            <h3>เข้า railway.app</h3>
+            <p>คลิก <strong>Login</strong> → เลือก <strong>Login with GitHub</strong> → อนุญาต Railway ให้ access GitHub</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">2</div>
+          <div>
+            <h3>New Project</h3>
+            <p>คลิกปุ่ม <strong>New Project</strong> → เลือก <strong>Deploy from GitHub repo</strong></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <div>
+            <h3>เลือก repo</h3>
+            <p>ค้นหา <code>teaching-log</code> → คลิก <strong>Deploy Now</strong></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <div>
+            <h3>ตั้ง Root Directory</h3>
+            <p>ไปที่ <strong>Settings → Source</strong> → ตั้ง <code>Root Directory</code> เป็น <code>backend</code></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info" style="margin-top:1rem">
+        <span>💡</span>
+        <span>Railway จะ auto-detect ว่าเป็น Node.js project และรัน <code>npm start</code> ให้อัตโนมัติ</span>
+      </div>
+    </div>
+
+    <!-- STEP 3: Railway ENV -->
+    <div class="step-panel" id="step3">
+      <div class="step-header">
+        <div class="step-badge badge-railway">🟣 Railway</div>
+        <h1>ตั้งค่า Environment Variables</h1>
+        <p>ไปที่ Variables tab แล้วเพิ่มทีละตัว</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚙️ Variables ที่ต้องใส่</div>
+        <table class="env-table">
+          <thead><tr><th>Variable</th><th>ค่า</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>SUPABASE_URL</td><td>https://xxxx.supabase.co (ขอจาก bro)</td><td><span class="tag tag-required">จำเป็น</span></td></tr>
+            <tr><td>SUPABASE_SERVICE_ROLE_KEY</td><td>eyJhbGci... (ขอจาก bro)</td><td><span class="tag tag-required">จำเป็น</span></td></tr>
+            <tr><td>JWT_SECRET</td><td>ตั้งเองได้ เช่น teaching2569secret</td><td><span class="tag tag-required">จำเป็น</span></td></tr>
+            <tr><td>FRONTEND_URL</td><td>https://teaching-log.vercel.app (ใส่ทีหลัง)</td><td><span class="tag tag-optional">ทีหลัง</span></td></tr>
+            <tr><td>PORT</td><td>3000</td><td><span class="tag tag-optional">optional</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <span>⚠️</span>
+        <span><strong>FRONTEND_URL</strong> ใส่ทีหลังได้ — ต้อง deploy Vercel ก่อนถึงจะรู้ URL หรือถ้ายังไม่รู้ใส่ <code>*</code> ไปก่อนได้</span>
+      </div>
+
+      <div class="card">
+        <div class="card-label">📋 เช็คก่อนไปต่อ</div>
+        <div class="checklist">
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> ใส่ SUPABASE_URL แล้ว</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> ใส่ SUPABASE_SERVICE_ROLE_KEY แล้ว</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> ใส่ JWT_SECRET แล้ว</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Railway Deploy -->
+    <div class="step-panel" id="step4">
+      <div class="step-header">
+        <div class="step-badge badge-railway">🟣 Railway</div>
+        <h1>Deploy Backend และ copy URL</h1>
+        <p>Railway จะ build และ deploy อัตโนมัติ</p>
+      </div>
+
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-circle">1</div>
+          <div>
+            <h3>รอ Build เสร็จ</h3>
+            <p>ดูที่ <strong>Deployments tab</strong> — รอจนขึ้น ✅ <strong>Success</strong></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">2</div>
+          <div>
+            <h3>Generate Domain</h3>
+            <p>ไปที่ <strong>Settings → Networking → Generate Domain</strong> → Railway จะสร้าง URL ให้เช่น <code>teaching-log-backend.up.railway.app</code></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <div>
+            <h3>ทดสอบ API</h3>
+            <p>เปิด browser ไปที่ URL นั้น ควรเห็น <code>{"message":"Teaching Log API 🟢"}</code></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <div>
+            <h3>Copy URL เก็บไว้</h3>
+            <p>เอา URL นี้ไปใส่ใน Vercel ขั้นตอนถัดไป รูปแบบคือ <code>https://xxx.up.railway.app</code></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <span>💡</span>
+        <span>ถ้า build fail ดู log ที่ <strong>Deployments → View Logs</strong> แล้วแจ้ง bro ได้เลย</span>
+      </div>
+    </div>
+
+    <!-- STEP 5: Vercel Project -->
+    <div class="step-panel" id="step5">
+      <div class="step-header">
+        <div class="step-badge badge-vercel">⚫ Vercel</div>
+        <h1>สร้าง Project บน Vercel</h1>
+        <p>เชื่อม GitHub repo กับ Vercel เพื่อ deploy frontend</p>
+      </div>
+
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-circle">1</div>
+          <div>
+            <h3>เข้า vercel.com</h3>
+            <p>คลิก <strong>Sign Up</strong> → เลือก <strong>Continue with GitHub</strong></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">2</div>
+          <div>
+            <h3>Add New Project</h3>
+            <p>คลิก <strong>Add New → Project</strong> → ค้นหา <code>teaching-log</code> → คลิก <strong>Import</strong></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <div>
+            <h3>ตั้ง Root Directory</h3>
+            <p>ที่ Configure Project → ตั้ง <strong>Root Directory</strong> เป็น <code>frontend</code></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <div>
+            <h3>Framework Preset</h3>
+            <p>Vercel จะ auto-detect เป็น <strong>Vite</strong> อัตโนมัติ ไม่ต้องแก้อะไร</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: Vercel ENV -->
+    <div class="step-panel" id="step6">
+      <div class="step-header">
+        <div class="step-badge badge-vercel">⚫ Vercel</div>
+        <h1>ตั้งค่า Environment Variables</h1>
+        <p>ใส่ก่อนกด Deploy — ที่ Environment Variables section</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚙️ Variables ที่ต้องใส่</div>
+        <table class="env-table">
+          <thead><tr><th>Variable</th><th>ค่า</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>VITE_API_URL</td><td>https://xxx.up.railway.app/api (URL จาก Step 4)</td><td><span class="tag tag-required">จำเป็น</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn">
+        <span>⚠️</span>
+        <span>ต้องขึ้นต้นด้วย <code>VITE_</code> เสมอ ไม่งั้น Vue จะมองไม่เห็น variable นี้</span>
+      </div>
+
+      <div class="card">
+        <div class="card-label">💡 ตัวอย่าง</div>
+        <pre><span class="key">VITE_API_URL</span> = <span class="val">https://teaching-log-backend.up.railway.app/api</span></pre>
+      </div>
+
+      <div class="tip">
+        <span>✅</span>
+        <span>ต้องมี <code>/api</code> ต่อท้าย URL ด้วยนะ เพราะ frontend เรียก endpoint แบบ <code>/api/logs</code>, <code>/api/auth/login</code></span>
+      </div>
+    </div>
+
+    <!-- STEP 7: Vercel Deploy -->
+    <div class="step-panel" id="step7">
+      <div class="step-header">
+        <div class="step-badge badge-vercel">⚫ Vercel</div>
+        <h1>Deploy Frontend</h1>
+        <p>กด Deploy แล้วรอ Vercel build เสร็จ</p>
+      </div>
+
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-circle">1</div>
+          <div>
+            <h3>กด Deploy</h3>
+            <p>คลิกปุ่ม <strong>Deploy</strong> — Vercel จะ run <code>npm run build</code> และ deploy อัตโนมัติ</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">2</div>
+          <div>
+            <h3>รอ Build เสร็จ</h3>
+            <p>ใช้เวลาประมาณ 1-2 นาที รอจนขึ้น 🎉 <strong>Congratulations!</strong></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <div>
+            <h3>Copy Vercel URL</h3>
+            <p>Vercel จะให้ URL เช่น <code>teaching-log.vercel.app</code> — copy ไว้</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <div>
+            <h3>อัปเดต Railway FRONTEND_URL</h3>
+            <p>กลับไปที่ Railway → Variables → แก้ <code>FRONTEND_URL</code> เป็น URL ของ Vercel เพื่อให้ CORS ทำงานถูกต้อง</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <span>💡</span>
+        <span>ทุกครั้งที่ push code ขึ้น <code>main</code> branch — Vercel และ Railway จะ auto-deploy ให้อัตโนมัติเลย</span>
+      </div>
+    </div>
+
+    <!-- STEP 8: Test -->
+    <div class="step-panel" id="step8">
+      <div class="step-header">
+        <div class="step-badge badge-done">✅ เสร็จสิ้น</div>
+        <h1>ทดสอบระบบ</h1>
+        <p>เช็คให้ครบทุกจุดก่อนส่งงาน</p>
+      </div>
+
+      <div class="card">
+        <div class="card-label">🧪 Checklist ทดสอบ</div>
+        <div class="checklist">
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> เปิด Vercel URL ได้ เห็นหน้า Landing</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> Login ด้วย admin@loeitc.ac.th / password123 ได้</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> Login ด้วย teacher สำเร็จ เห็น sidebar ไม่มีเมนู admin</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> หน้า Log List โหลดข้อมูลได้</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> กรอก Log ใหม่และ upload รูปได้</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> Export PDF ออกมาได้ถูกต้อง</div>
+          <div class="check-item" onclick="tick(this)"><div class="check-box"></div> Admin เห็นข้อมูลครูทุกคน กรองแผนกได้</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem">
+        <div class="card-label">🐛 ถ้ายังมีปัญหา</div>
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-circle" style="background:#ef4444">!</div>
+            <div><h3>CORS Error</h3><p>แก้ <code>FRONTEND_URL</code> ใน Railway ให้ตรงกับ Vercel URL</p></div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle" style="background:#ef4444">!</div>
+            <div><h3>API ไม่ตอบ</h3><p>เช็ค <code>VITE_API_URL</code> ใน Vercel ว่ามี <code>/api</code> ต่อท้ายหรือเปล่า</p></div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle" style="background:#ef4444">!</div>
+            <div><h3>Login ไม่ได้</h3><p>เช็ค <code>JWT_SECRET</code> ใน Railway ว่าใส่ครบหรือเปล่า</p></div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle" style="background:#ef4444">!</div>
+            <div><h3>Database Error</h3><p>เช็ค <code>SUPABASE_URL</code> และ <code>SUPABASE_SERVICE_ROLE_KEY</code> ใน Railway</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="done-card">
+        <div class="done-icon">🎉</div>
+        <div>
+          <p style="font-size:17px;font-weight:700;color:#085041;margin-bottom:4px">Deploy สำเร็จแล้ว!</p>
+          <p style="font-size:14px;color:#3B6D11">ระบบ Teaching Log พร้อมใช้งานบน Production แล้ว 🚀</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <button class="btn" id="btn-prev" onclick="prevStep()" disabled>← ย้อนกลับ</button>
+      <span class="step-counter" id="step-counter">1 / 8</span>
+      <button class="btn btn-primary" id="btn-next" onclick="nextStep()">ถัดไป →</button>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  var cur = 1, total = 8
+
+  function goStep(n) {
+    document.getElementById('step' + cur).classList.remove('active')
+    document.getElementById('nav' + cur).classList.remove('active')
+    document.getElementById('nav' + cur).classList.add('done')
+    cur = n
+    document.getElementById('step' + cur).classList.add('active')
+    document.getElementById('nav' + cur).classList.add('active')
+    document.getElementById('nav' + cur).classList.remove('done')
+    document.getElementById('step-counter').textContent = cur + ' / ' + total
+    document.getElementById('btn-prev').disabled = cur === 1
+    document.getElementById('btn-next').disabled = cur === total
+    document.getElementById('btn-next').textContent = cur === total ? 'เสร็จสิ้น ✓' : 'ถัดไป →'
+    window.scrollTo(0, 0)
+  }
+
+  function nextStep() { if (cur < total) goStep(cur + 1) }
+  function prevStep() { if (cur > 1) goStep(cur - 1) }
+  function tick(el) { el.classList.toggle('done') }
+</script>
+</body>
+</html>
